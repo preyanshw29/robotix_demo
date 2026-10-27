@@ -1,109 +1,105 @@
 # ROBOFEST 2026 — Official Landing Page
-### Flagship Autonomous Robotics & Combat Spectacle by ROBOTiX Club, NIT Raipur
+### Autonomous Systems Observatory & Robotics Arena | ROBOTiX Club, NIT Raipur
 
-An elite, high-performance, responsive web portal for **Robofest 2026**, the annual flagship robotics festival hosted by the **ROBOTiX Club** at the **National Institute of Technology (NIT), Raipur** under the aegis of **Anantya**.
+An elite, high-performance, responsive web application for **Robofest 2026**, the annual flagship robotics festival hosted by the **ROBOTiX Club** at the **National Institute of Technology (NIT), Raipur** under the aegis of **Anantya**.
 
-Designed following the **AWE — Robot Observatory After Midnight** design philosophy, departing from generic techfest templates to deliver a museum-grade, dark-gallery autonomous systems experience.
+Engineered following the **AWE — Robot Observatory After Midnight** design philosophy (`#010101` Void Canvas, `#16191b` Machine Wells, 1px `#252525` Hairline Ash grids, and `#1f1f23` Charcoal Control navigation pills) with shadcn/ui project structure, TypeScript, and interactive 3D WebGL Three.js orbits.
 
 ---
 
 ## 📋 Submission Dossier
 
-### 1. Live Website
-- **Deployment Ready:** Configured for one-click deployment on **Vercel**, **Netlify**, or **GitHub Pages**.
-- To run locally:
+### 1. Live Website Link
+- **Local Development Server:**
   ```bash
-  npm install
+  cd C:\Users\priya\.gemini\antigravity\scratch\robofest-landing-page
   npm run dev
   ```
-  Open `http://localhost:5173`
-
-### 2. GitHub Repository
-- Source repository initialized in this project directory.
-- To link and push to your GitHub account:
+  Open **[http://localhost:5173/](http://localhost:5173/)**
+- **Production Build & Preview:**
   ```bash
-  git remote add origin https://github.com/<your-username>/robofest-2026.git
-  git branch -M main
-  git push -u origin main
+  npm run build
+  npm run preview
   ```
+- **Deployment Ready:** Pre-configured with [`vercel.json`](file:///C:/Users/priya/.gemini/antigravity/scratch/robofest-landing-page/vercel.json) for 1-click deployment on **Vercel** or **Netlify**.
+
+---
+
+### 2. GitHub Repository Link
+Source code is committed and tracked in local Git. To push to GitHub:
+```bash
+git remote add origin https://github.com/<your-username>/robofest-2026.git
+git branch -M main
+git push -u origin main
+```
+
+---
 
 ### 3. Chosen Theme & Design Philosophy
 - **Theme:** **AWE — Robot Observatory After Midnight**
-- **Aesthetic Concept:** An autonomous systems laboratory operating after hours. The design pairs a deep `#010101` Void Canvas with recessed `#16191b` Machine Wells, 1px `#252525` Hairline Ash structural grids, and `#1f1f23` Charcoal Control navigation pills with `#646e71` numeric markers.
+- **Palette & Surfaces:**
+  - `Void Canvas` (`#010101`): Infinite dark plane.
+  - `Machine Well` (`#16191b`): Recessed 16px radius cards and 3D media bays.
+  - `Charcoal Control` (`#1f1f23`): 100px radius navigation pills and compact controls.
+  - `Hairline Ash` (`#252525`): 1px architectural grid lines without drop shadows.
+  - `Porcelain` (`#e0e0e0`): Primary display typography and icons.
+  - `Muted Steel` (`#828b8d`): Secondary explanations and technical body text.
+  - `Faint Steel` (`#646e71`): Mono coordinates and numeric counters `(01)`, `(04)`.
 - **Typography Pairing:**
-  - **Monumental Display:** *Cormorant Garamond* (Office Times Round substitute) at large scale with negative tracking (`-3%`) for a ceremonial, authoritative voice.
-  - **Data & Telemetry:** *IBM Plex Mono* (ABC Laica Mono substitute) for micro-coordinates, step indicators, and flight readouts.
+  - **Display:** *Cormorant Garamond* (Office Times Round substitute) at monumental size with `-3%` tracking.
   - **Interface & Reading:** *Inter* (Messina Sans substitute) at 16px/1.4 for clean technical prose.
-- **Color Discipline:** The UI chrome remains strictly monochrome; vibrant cyan (`#00e5ff`) and electric accents are reserved exclusively for the 3D WebGL robotic viewport, active sensor pulses, and interactive status badges.
+  - **Telemetry & Navigation:** *IBM Plex Mono* (ABC Laica Mono substitute) at 13px with expanded tracking (`1.04px`).
+
+---
 
 ### 4. Project Description & Architectural Choices
-- **3D Interactive Kinetic Gyroscope:** Built with Three.js, rendering an interactive robotic core featuring concentric polyhedral gimbal rings (Icosahedron, Torus, Dodecahedron) with real-time mouse-orientation physics, wireframe toggling, and velocity controls.
-- **Curated Arena Competitions (9 Events):**
-  - *RoboWar: Titan Clash* (Flagship combat robotics in an armored 8mm polycarbonate cage)
-  - *RoboSoccer: Cyber Kickoff* (1v1 and 2v2 tactical turf showdown)
-  - *RoboRace: Apex Circuit* (Precision obstacle time trials)
-  - *Robothon: 24H Simulation Matrix* (ROS 2 / Gazebo non-stop challenge)
-  - *Vibe Coding: Embedded Nexus* (Bare-metal microcontroller bug-triage)
-  - *AeroVision: Autonomous AI Drone Grand Prix* (Edge AI neon-gate circuit)
-  - *Mecha Gauntlet: Quadruped & Bipedal Agility* (Legged robot kinematics)
-  - *NeuroBotix: Mind & Gesture Arena* (BCI EEG & OpenCV hand-gesture manipulation)
-  - *Cyber Salvage: Disaster Response SLAM* (LiDAR & thermal smoke maze run)
-- **Interactive Blueprint Inspection:** Every event card features an expandable modal detailing weight classes, power limits, arena dimensions, safety rules, and coordinator contacts.
-- **Interactive Pass Generator:** Real-time holographic delegate pass with barcode, instant student credential generation, and confetti celebration.
-- **Auditory Telemetry:** Built-in Web Audio API synthesizer providing subtle, non-intrusive sound feedback for instrument buttons.
-- **Responsive Navigation:** Floating section navigation pills with live counters `(09)`, `(03)`, `(01)` that track user scrolling.
+- **Interactive 3D Revolving Contest Spiral (`3d-orbit-gallery.tsx`):**
+  - Integrated into `@/components/ui/3d-orbit-gallery.tsx` within the shadcn directory structure.
+  - 8 large orbiting contest placards revolving outward around an ambient coordinate particle sphere.
+  - **Tactile Interaction:** Hovering scales the card up (`1.18x`) with cursor feedback. Clicking any card immediately launches the **Event Briefing & Delegate Registration Modal** pre-selected for that contest.
+- **4 Original Creative Contests:**
+  1. **AeroVision:** Autonomous AI Drone Grand Prix (100% Computer Vision, Jetson/RPi, neon optical gate navigation).
+  2. **Mecha Gauntlet:** Quadruped & Bipedal Agility Trial (Dynamic gait transitions, balance beams, stairs).
+  3. **NeuroBotix:** Mind-Controlled & Gesture Tele-Operation (OpenBCI EEG brainwaves and CV gesture manipulation).
+  4. **Cyber Salvage:** Subterranean Search-and-Rescue SLAM (Zero-visibility maze, LiDAR and thermal mapping).
+- **Interactive Radar Waypoint Simulator:** Live 2D telemetry radar with clickable waypoint nodes, live sensor feedback, and real-time contest specs.
+- **Instant Cryptographic Delegate Pass:** Real-time pass customizer with dynamic barcode, live ID generator (`RF26-XXXX`), print/PDF capability, and confetti celebration.
+- **Audio Feedback Synthesizer:** Native Web Audio API procedural synthesizer for subtle instrument button feedback (toggleable via the top-bar audio switch).
+- **Concise Copy:** Stripped of unnecessary filler text; replaced with punchy, museum-grade technical placards.
+
+---
 
 ### 5. Disclosure of AI Tools, Templates & Prebuilt Components
-- **AI Pairing Assistant:** Developed with Google Antigravity Agentic Assistant for code architecture, component scaffolding, and responsive design execution.
-- **Design Reference:** Design tokens, layout principles, and component patterns inspired by the AWE Network Design System (`awenetwork.ai`).
-- **Icons & Graphics:** Clean SVG vectors and `lucide-react` icons.
-- **3D Rendering:** `three.js` (WebGL).
-- **Styling:** Tailwind CSS v4 with custom CSS variables matching AWE tokens.
-- **Celebration FX:** `canvas-confetti`.
+- **AI Tooling:** Antigravity AI Assistant was utilized for design system implementation, component composition, and responsive optimization.
+- **Design Tokens:** Tokens and component rules derived from the AWE Network Design System (`awenetwork.ai`).
+- **Prebuilt Components:** Integrated and adapted `3d-orbit-gallery.tsx` into `@/components/ui/` with custom procedural canvas textures and click event handlers.
+- **Libraries Used:** React 19, Three.js, `@react-three/fiber`, `@react-three/drei`, Tailwind CSS v4, Lucide Icons, Canvas-Confetti, clsx, tailwind-merge.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Directory Layout
 
-| Technology | Purpose |
-| :--- | :--- |
-| **React 19** | Declarative component UI and state management |
-| **Vite 6** | Ultra-fast build pipeline and HMR |
-| **Tailwind CSS v4** | Token-based responsive utility styling |
-| **Three.js** | 3D WebGL robotic core visualization |
-| **Web Audio API** | Procedural UI telemetry sound effects |
-| **Lucide Icons** | Minimalist technical iconography |
-| **Canvas Confetti** | Celebration particle effects for registration |
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+ (tested on Node v26)
-- npm or pnpm
-
-### Installation
-```bash
-git clone <repo-url>
-cd robofest-landing-page
-npm install
 ```
-
-### Development
-```bash
-npm run dev
+robofest-landing-page/
+├── components.json         # shadcn configuration
+├── tsconfig.json           # TypeScript configuration with @/* alias
+├── vite.config.js          # Vite 6 config with Tailwind v4 & Three chunking
+├── src/
+│   ├── components/
+│   │   ├── ui/
+│   │   │   ├── 3d-orbit-gallery.tsx   # 3D Orbit Gallery (8 contest placards)
+│   │   │   └── demo.tsx               # Standalone demo component
+│   │   ├── AboutSection.tsx           # Telemetry metrics
+│   │   ├── EventsSection.tsx          # 4 Creative Contests + Interactive Radar
+│   │   ├── Footer.tsx                 # AWE link cluster & NITRR coordinates
+│   │   ├── Header.tsx                 # 76px nav with #1f1f23 pills & SFX toggle
+│   │   ├── Hero.tsx                   # Monumental display + 3D viewport
+│   │   ├── InteractivePass.tsx        # Delegate pass generator & modal
+│   │   ├── RegistrationSection.tsx    # Event details + pass issuance modal
+│   │   └── ThreeScene.tsx             # Interactive gyroscopic robotic core
+│   ├── lib/
+│   │   └── utils.ts                   # shadcn cn() helper
+│   ├── App.tsx                        # Root layout
+│   ├── index.css                      # AWE CSS tokens
+│   └── main.tsx                       # React 19 root
 ```
-
-### Production Build
-```bash
-npm run build
-npm run preview
-```
-
----
-
-## 🏛️ Credits & Acknowledgements
-- **ROBOTiX Club**, National Institute of Technology Raipur
-- **Anantya**, Annual Techno-Entrepreneurship Summit
-- Official Reference: [https://robotix.nitrr.ac.in/robofest](https://robotix.nitrr.ac.in/robofest)
