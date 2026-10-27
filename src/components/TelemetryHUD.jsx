@@ -1,31 +1,31 @@
 import React, { useState } from 'react'
-import { Terminal, Shield, Award, Users, Cpu, Radio, ChevronRight } from 'lucide-react'
+import { Terminal, Shield, Award, Users, Cpu, Radio, ChevronRight, Activity, Zap } from 'lucide-react'
 
 export default function TelemetryHUD({ playBeep }) {
   const [activeTab, setActiveTab] = useState('legacy')
 
   const stats = [
-    { label: 'CUMULATIVE PRIZE POOL', value: '₹1,50,000+', detail: 'Cash grants & industry sponsorship' },
-    { label: 'BOT PILOTS & RESEARCHERS', value: '1,200+', detail: 'Undergraduates, hackers & makers' },
-    { label: 'CONTINUOUS SPRINT DURATION', value: '48 HOURS', detail: 'Combat heats & simulation matrix' },
-    { label: 'REPRESENTED INSTITUTIONS', value: '50+ COLLEGES', detail: 'IITs, NITs, IIITs & premier colleges' },
+    { label: 'TOTAL PRIZE POOL', value: '₹1,50,000+', detail: 'Cash grants & unstop prizes' },
+    { label: 'ROBOT PILOTS & RESEARCHERS', value: '1,200+', detail: 'Makers, coders & bot builders' },
+    { label: 'CONTINUOUS SPRINT MATRIX', value: '48 HOURS', detail: 'Combat heats & 24h simulation' },
+    { label: 'PREMIER COLLEGES', value: '50+ INSTITUTES', detail: 'IITs, NITs, IIITs nationwide' },
   ]
 
   const pillars = {
     legacy: {
-      tag: 'ORIGIN & HERITAGE',
-      title: 'Born in the heart of Central India’s premier technical institute.',
-      text: 'Robofest stands as the annual flagship robotics congregation organized by the ROBOTiX Club of National Institute of Technology (NIT) Raipur. Conducted under Anantya—NIT Raipur’s premier techno-entrepreneurial summit—Robofest has evolved from local microcontroller showcases into a nationally recognized stage for high-voltage combat and autonomous engineering.',
+      tag: 'HERITAGE // NIT RAIPUR',
+      title: 'Forged in Central India’s premier institute of technology.',
+      text: 'Robofest is the flagship annual robotics celebration organized by the student-led ROBOTiX Club of National Institute of Technology (NIT) Raipur. Conducted under Anantya—NIT Raipur’s annual techno-entrepreneurial confluence—Robofest brings together hardware engineers, coders, and bot pilots from across India to challenge the boundaries of autonomous systems and combat robotics.',
       bullets: [
-        'Organized entirely by student engineers and researchers from ROBOTiX Club.',
-        'Mentored by NIT Raipur faculty and domain specialists in robotics and mechatronics.',
-        'Endorsed by national technical bodies, alumni mentors, and robotics industries.',
+        'Organized and engineered entirely by student innovators from ROBOTiX Club.',
+        'Mentored by NIT Raipur faculty and domain researchers in mechatronics.',
+        'Supported by leading robotics industries, alumni founders, and tech platforms.',
       ],
     },
     arena: {
-      tag: 'BATTLESPACE & HARDWARE',
-      title: 'Engineered for extreme durability, RF scrutiny, and safety.',
-      text: 'The physical combat grounds feature an armored 8mm polycarbonate and steel mesh containment cell rated for high-RPM kinetic spinners and pneumatic combat bots up to 60kg. Meanwhile, our autonomous indoor aerial courses feature optical laser gates and simulated subterranean obstacle runs.',
+      tag: 'BATTLESPACE RIGOR',
+      title: 'Engineered for extreme kinetic combat, RF scrutiny & safety.',
+      text: 'The physical combat grounds feature an armored 8mm polycarbonate and steel containment cell rated for high-RPM kinetic spinners and pneumatic combat bots up to 60kg. Meanwhile, our autonomous indoor aerial courses feature optical laser gates and simulated subterranean obstacle runs.',
       bullets: [
         'Standardized 2.4GHz fail-safe RF frequency spectrum monitoring.',
         'Certified pneumatic pressure & battery containment safety checks.',
@@ -45,51 +45,49 @@ export default function TelemetryHUD({ playBeep }) {
   }
 
   return (
-    <section id="about" className="relative w-full py-16 px-4 sm:px-6 max-w-[940px] mx-auto scroll-mt-24">
+    <section id="about" className="relative w-full py-20 px-4 sm:px-6 max-w-[1100px] mx-auto scroll-mt-24">
       
-      {/* Process Step Header (Strict AWE Component Rule) */}
-      <div className="flex flex-col gap-2 pb-4 border-b border-[#252525]">
-        <div className="flex items-center justify-between text-[13px] font-mono-tech">
-          <div className="flex items-center gap-2 text-[#e0e0e0]">
-            <span className="text-[#00e5ff]">[01]</span>
-            <span className="tracking-[1.04px]">ABOUT ROBOFEST</span>
-          </div>
-          <span className="text-[#646e71] uppercase tracking-[1.04px]">
-            SYS_DOC // NITRR.ROBOTIX
-          </span>
+      {/* Top Banner Tag */}
+      <div className="flex items-center justify-between pb-4 border-b border-cyan-500/20">
+        <div className="flex items-center gap-2 text-xs font-orbitron text-cyan-400">
+          <Activity className="w-3.5 h-3.5" />
+          <span>ABOUT ROBOFEST // ROBOTiX CLUB</span>
         </div>
+        <span className="text-xs font-mono-tech text-gray-400">
+          ANANTYA '26 PROTOCOL
+        </span>
       </div>
 
-      {/* Feature Module Heading */}
+      {/* Module Heading */}
       <div className="mt-8">
-        <h2 className="text-2xl sm:text-3xl md:text-[32px] font-semibold text-[#e0e0e0] leading-[1.2] tracking-[-0.64px]">
-          Where mechanical rigor converges with autonomous software intelligence.
+        <h2 className="font-orbitron text-3xl sm:text-4xl md:text-5xl font-black text-white text-glow-cyan leading-tight">
+          WHERE RIGOR CONVERGES WITH AUTONOMY.
         </h2>
-        <p className="mt-4 text-[#828b8d] text-base leading-[1.4] max-w-[800px]">
-          Robofest is more than a robotics tournament; it is a live laboratory where students build, stress-test, and deploy machines designed to dominate arenas and solve complex simulation challenges.
+        <p className="mt-4 text-gray-300 text-sm sm:text-base font-exo max-w-[800px] leading-relaxed">
+          Robofest is the epic center-stage where mechanical engineering, firmware optimization, and algorithmic intelligence collide to solve complex challenges.
         </p>
       </div>
 
-      {/* 4-Column Instrument Telemetry Cards */}
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* 4-Column Stat Cards with Neon Glow */}
+      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, i) => (
           <div
             key={stat.label}
-            className="p-5 rounded-2xl bg-[#16191b] border border-[#252525] flex flex-col justify-between group hover:border-[#444444] transition-colors"
+            className="p-5 rounded-2xl bg-[#0a0f1e]/80 border border-cyan-500/25 backdrop-blur-md flex flex-col justify-between group hover:border-cyan-400 transition-all hover:-translate-y-1 shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:shadow-[0_0_25px_rgba(0,212,255,0.2)]"
           >
             <div>
-              <div className="text-[10px] font-mono-tech text-[#646e71] tracking-[2.4px] uppercase">
+              <div className="text-[10px] font-mono-tech text-cyan-400 uppercase tracking-widest">
                 METRIC.0{i + 1}
               </div>
-              <div className="mt-3 font-mono-tech text-2xl font-semibold text-[#e0e0e0] tracking-tight group-hover:text-[#00e5ff] transition-colors">
+              <div className="mt-3 font-orbitron text-2xl sm:text-3xl font-black text-white group-hover:text-cyan-300 transition-colors">
                 {stat.value}
               </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-[#252525]">
-              <div className="text-[11px] font-mono-tech text-[#e0e0e0] font-medium uppercase">
+            <div className="mt-4 pt-3 border-t border-cyan-500/15">
+              <div className="text-xs font-orbitron text-gray-200 uppercase font-semibold">
                 {stat.label}
               </div>
-              <div className="text-[11px] text-[#828b8d] mt-0.5 leading-snug">
+              <div className="text-xs font-exo text-gray-400 mt-1 leading-snug">
                 {stat.detail}
               </div>
             </div>
@@ -98,10 +96,10 @@ export default function TelemetryHUD({ playBeep }) {
       </div>
 
       {/* Interactive Pillar Tabs */}
-      <div className="mt-12 rounded-2xl border border-[#252525] bg-[#16191b] p-6 sm:p-8">
+      <div className="mt-12 rounded-3xl border border-cyan-500/30 bg-[#0a0f1e]/85 backdrop-blur-md p-6 sm:p-8 shadow-[0_0_30px_rgba(0,212,255,0.12)]">
         
         {/* Tab Selection Row */}
-        <div className="flex flex-wrap items-center gap-2 pb-6 border-b border-[#252525]">
+        <div className="flex flex-wrap items-center gap-2 pb-6 border-b border-cyan-500/20">
           {[
             { id: 'legacy', label: 'THE LEGACY', counter: '01' },
             { id: 'arena', label: 'ARENA SPECIFICATIONS', counter: '02' },
@@ -113,14 +111,16 @@ export default function TelemetryHUD({ playBeep }) {
                 playBeep?.(800, 0.04)
                 setActiveTab(tab.id)
               }}
-              className={`px-4 py-2 rounded-[100px] text-[13px] font-mono-tech tracking-[1.04px] flex items-center gap-2 transition-all cursor-pointer ${
+              className={`px-5 py-2 rounded-full text-xs font-orbitron tracking-wider flex items-center gap-2 transition-all cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-[#1f1f23] text-[#e0e0e0] border border-[#444444]'
-                  : 'text-[#646e71] hover:text-[#e0e0e0] hover:bg-[#1f1f23]/50'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-[#070b17] font-bold shadow-[0_0_15px_rgba(0,212,255,0.4)]'
+                  : 'bg-[#070b17] border border-cyan-500/20 text-gray-400 hover:text-cyan-300'
               }`}
             >
               <span>{tab.label}</span>
-              <span className="text-[11px] text-[#646e71]">({tab.counter})</span>
+              <span className={activeTab === tab.id ? 'text-[#070b17]/80 text-[10px]' : 'text-cyan-400 text-[10px]'}>
+                ({tab.counter})
+              </span>
             </button>
           ))}
         </div>
@@ -128,25 +128,25 @@ export default function TelemetryHUD({ playBeep }) {
         {/* Tab Content Display */}
         <div className="mt-6 flex flex-col md:flex-row md:items-start justify-between gap-8">
           <div className="flex-1">
-            <span className="text-[10px] font-mono-tech text-[#00e5ff] tracking-[2.4px] uppercase font-semibold">
+            <span className="text-xs font-orbitron text-cyan-400 tracking-[0.2em] uppercase font-bold">
               {pillars[activeTab].tag}
             </span>
-            <h3 className="mt-2 text-xl font-semibold text-[#e0e0e0] leading-snug">
+            <h3 className="mt-2 text-xl sm:text-2xl font-orbitron font-bold text-white leading-snug">
               {pillars[activeTab].title}
             </h3>
-            <p className="mt-3 text-sm text-[#828b8d] leading-relaxed">
+            <p className="mt-3 text-sm text-gray-300 font-exo leading-relaxed">
               {pillars[activeTab].text}
             </p>
           </div>
 
-          <div className="md:w-[320px] bg-[#010101] p-5 rounded-xl border border-[#252525]">
-            <span className="text-[10px] font-mono-tech text-[#646e71] uppercase tracking-wider block mb-3">
+          <div className="md:w-[340px] bg-[#070b17] p-5 rounded-2xl border border-cyan-500/20">
+            <span className="text-[10px] font-orbitron text-cyan-400 uppercase tracking-widest block mb-3">
               STANDARDS & RIGOR
             </span>
-            <ul className="flex flex-col gap-2.5">
+            <ul className="flex flex-col gap-3">
               {pillars[activeTab].bullets.map((bullet, idx) => (
-                <li key={idx} className="flex items-start gap-2 text-xs text-[#e0e0e0]">
-                  <ChevronRight className="w-3.5 h-3.5 text-[#00e5ff] shrink-0 mt-0.5" />
+                <li key={idx} className="flex items-start gap-2.5 text-xs text-gray-300 font-exo">
+                  <ChevronRight className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                   <span className="leading-snug">{bullet}</span>
                 </li>
               ))}
