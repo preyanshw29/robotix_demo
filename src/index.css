@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* AWE Design System Tokens */
+    --color-void: #010101;
+    --gradient-void: linear-gradient(0deg, #010101 30%, rgba(26, 26, 26, 0.9));
+    --color-charcoal-control: #1f1f23;
+    --color-porcelain: #e0e0e0;
+    --color-machine-well: #16191b;
+    --color-hairline-ash: #252525;
+    --color-muted-steel: #828b8d;
+    --color-dormant-graphite: #444444;
+    --color-faint-steel: #646e71;
+    --color-cyan-glow: #00e5ff;
+
+    /* Typography */
+    --font-display: 'Cormorant Garamond', 'Office Times Round', Georgia, serif;
+    --font-sans: 'Inter', 'Messina Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'ABC Laica Mono', monospace;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-porcelain);
+    font-family: var(--font-sans);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Custom Typography Helpers adhering to AWE style guide */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+
+.font-mono-tight {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #010101;
+}
+::-webkit-scrollbar-thumb {
+  background: #252525;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #444444;
+}
+
+/* Radar pulse animation for autonomous bot simulation */
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar {
+  animation: radar-sweep 8s linear infinite;
+}
+
+/* Subtle scanline effect */
+.scanline-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0, 0, 0, 0.25) 50%,
+    rgba(0, 0, 0, 0.25)
+  );
+  background-size: 100% 4px;
+}
