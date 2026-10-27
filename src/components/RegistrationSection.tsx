@@ -1,9 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import confetti from 'canvas-confetti'
-import { QrCode, ArrowUpRight, X, Download } from 'lucide-react'
+import { QrCode, ArrowUpRight, X, Download, FileText, CheckCircle2 } from 'lucide-react'
 import { CONTESTS } from './EventsSection'
 
-export default function RegistrationSection({ initialEvent, isModalOpen, setIsModalOpen, playBeep }) {
+interface RegistrationProps {
+  initialEvent: string
+  isModalOpen: boolean
+  setIsModalOpen: (open: boolean) => void
+  playBeep?: (freq?: number, duration?: number) => void
+}
+
+export default function RegistrationSection({
+  initialEvent,
+  isModalOpen,
+  setIsModalOpen,
+  playBeep,
+}: RegistrationProps) {
   const [formData, setFormData] = useState({
     name: 'Kshitij Verma',
     college: 'NIT Raipur',
@@ -11,6 +23,15 @@ export default function RegistrationSection({ initialEvent, isModalOpen, setIsMo
     passId: 'RF26-0842',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [modalTab, setModalTab] = useState<'info' | 'register'>('register')
+
+  useEffect(() => {
+    if (initialEvent) {
+      setFormData((prev) => ({ ...prev, selectedEvent: initialEvent }))
+    }
+  }, [initialEvent])
+
+  const selectedContestData = CONTESTS.find((c) => c.title === formData.selectedEvent) || CONTESTS[0]
 
   const handleClaim = (e: React.FormEvent) => {
     e.preventDefault()
@@ -134,34 +155,65 @@ export default function RegistrationSection({ initialEvent, isModalOpen, setIsMo
         </div>
       </div>
 
-      {/* Modal Dialog */}
+      {/* Comprehensive Event Info & Registration Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#010101]/85 backdrop-blur-md">
-          <div className="relative w-full max-w-[480px] rounded-2xl bg-[#16191b] border border-[#252525] p-6 sm:p-8">
+          <div className="relative w-full max-w-[540px] rounded-2xl bg-[#16191b] border border-[#252525] p-6 sm:p-8 shadow-2xl">
+            
+            {/* Modal Header with Event Name */}
             <div className="flex items-center justify-between pb-3 border-b border-[#252525]">
-              <span className="text-xs font-mono-nav text-[#e0e0e0]">
-                DELEGATE REGISTRATION // ROBOFEST '26
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono-nav text-[#e0e0e0]">
+                  {selectedContestData.code} // {selectedContestData.title.toUpperCase()}
+                </span>
+              </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#1f1f23] flex items-center justify-center text-[#828b8d] hover:text-[#e0e0e0]"
+                className="w-7 h-7 rounded-full bg-[#1f1f23] flex items-center justify-center text-[#828b8d] hover:text-[#e0e0e0] cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
+            {/* Event Info Briefing Box */}
+            <div className="mt-4 p-4 rounded-xl bg-[#010101] border border-[#252525]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono-nav text-[#646e71] uppercase">
+                  {selectedContestData.tag}
+                </span>
+                <span className="text-xs font-mono-nav text-[#e0e0e0]">
+                  PURSE: {selectedContestData.telemetry.find(t => t.label === 'PURSE')?.val}
+                </span>
+              </div>
+              <p className="mt-2 text-xs text-[#828b8d] leading-relaxed">
+                {selectedContestData.summary}
+              </p>
+              
+              <div className="mt-3 pt-3 border-t border-[#252525] grid grid-cols-2 gap-2 text-[11px] font-mono-nav text-[#646e71]">
+                {selectedContestData.telemetry.slice(0, 2).map((t) => (
+                  <div key={t.label}>
+                    <span>{t.label}: </span>
+                    <span className="text-[#e0e0e0]">{t.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {submitted ? (
               <div className="py-6 flex flex-col items-center text-center">
+                <div className="w-10 h-10 rounded-full bg-[#1f1f23] border border-[#252525] flex items-center justify-center text-[#e0e0e0] mb-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#e0e0e0]" />
+                </div>
                 <span className="text-xs font-mono-nav text-[#e0e0e0] uppercase">
                   CREDENTIAL ISSUED // {formData.passId}
                 </span>
                 <p className="text-xs text-[#828b8d] mt-2">
-                  Assigned to {formData.name} for {formData.selectedEvent}.
+                  Assigned to <span className="text-[#e0e0e0]">{formData.name}</span> for <span className="text-[#e0e0e0]">{formData.selectedEvent}</span>.
                 </p>
                 <div className="mt-6 flex gap-2">
                   <button
                     onClick={() => window.print()}
-                    className="h-[36px] px-4 rounded-[100px] bg-[#1f1f23] text-[#e0e0e0] text-xs font-mono-nav flex items-center gap-2 border border-[#252525]"
+                    className="h-[36px] px-4 rounded-[100px] bg-[#1f1f23] text-[#e0e0e0] text-xs font-mono-nav flex items-center gap-2 border border-[#252525] cursor-pointer"
                   >
                     <Download className="w-3 h-3" />
                     <span>PRINT / PDF</span>
@@ -171,7 +223,7 @@ export default function RegistrationSection({ initialEvent, isModalOpen, setIsMo
                       setSubmitted(false)
                       setIsModalOpen(false)
                     }}
-                    className="h-[36px] px-4 rounded-[100px] bg-[#e0e0e0] text-[#010101] text-xs font-mono-nav font-medium"
+                    className="h-[36px] px-4 rounded-[100px] bg-[#e0e0e0] text-[#010101] text-xs font-mono-nav font-medium cursor-pointer"
                   >
                     <span>CLOSE</span>
                   </button>
@@ -202,7 +254,7 @@ export default function RegistrationSection({ initialEvent, isModalOpen, setIsMo
                 </div>
 
                 <div>
-                  <label className="text-[#646e71] block mb-1">DESIGNATED PROTOCOL</label>
+                  <label className="text-[#646e71] block mb-1">SELECTED PROTOCOL CONTEST</label>
                   <select
                     value={formData.selectedEvent}
                     onChange={(e) => setFormData({ ...formData, selectedEvent: e.target.value })}
@@ -210,7 +262,7 @@ export default function RegistrationSection({ initialEvent, isModalOpen, setIsMo
                   >
                     {CONTESTS.map((c) => (
                       <option key={c.id} value={c.title} className="bg-[#16191b]">
-                        {c.title} — {c.role}
+                        {c.code} // {c.title} — {c.role}
                       </option>
                     ))}
                   </select>
@@ -220,15 +272,15 @@ export default function RegistrationSection({ initialEvent, isModalOpen, setIsMo
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-3 py-1.5 text-[#646e71] hover:text-[#e0e0e0]"
+                    className="px-3 py-1.5 text-[#646e71] hover:text-[#e0e0e0] cursor-pointer"
                   >
                     CANCEL
                   </button>
                   <button
                     type="submit"
-                    className="h-[36px] px-5 rounded-[100px] bg-[#1f1f23] border border-[#252525] hover:border-[#828b8d] text-[#e0e0e0] font-medium"
+                    className="h-[36px] px-5 rounded-[100px] bg-[#1f1f23] border border-[#252525] hover:border-[#828b8d] text-[#e0e0e0] font-medium cursor-pointer"
                   >
-                    CONFIRM PASS
+                    CONFIRM & ISSUE PASS
                   </button>
                 </div>
               </form>

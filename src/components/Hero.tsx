@@ -2,8 +2,18 @@ import React, { useState } from 'react'
 import { OrbitGalleryCanvas } from '@/components/ui/3d-orbit-gallery'
 import ThreeScene from './ThreeScene'
 
-export default function Hero({ onRegisterClick, playBeep }) {
+interface HeroProps {
+  onRegisterClick: (eventTitle?: string) => void
+  playBeep?: (freq?: number, duration?: number) => void
+}
+
+export default function Hero({ onRegisterClick, playBeep }: HeroProps) {
   const [activeVisual, setActiveVisual] = useState<'orbit' | 'core'>('orbit')
+
+  const handleSelectFromOrbit = (title: string) => {
+    playBeep?.(1100, 0.08)
+    onRegisterClick(title)
+  }
 
   return (
     <section className="relative w-full pt-16 md:pt-24 pb-12 px-4 max-w-[940px] mx-auto flex flex-col items-center">
@@ -45,7 +55,10 @@ export default function Hero({ onRegisterClick, playBeep }) {
           
           {/* Active 3D Visualizer */}
           {activeVisual === 'orbit' ? (
-            <OrbitGalleryCanvas className="w-full h-full cursor-grab active:cursor-grabbing" />
+            <OrbitGalleryCanvas 
+              className="w-full h-full cursor-grab active:cursor-grabbing" 
+              onSelectEvent={handleSelectFromOrbit}
+            />
           ) : (
             <ThreeScene />
           )}
@@ -55,11 +68,11 @@ export default function Hero({ onRegisterClick, playBeep }) {
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0]" />
               <span className="text-[11px] font-mono-nav text-[#e0e0e0]">
-                {activeVisual === 'orbit' ? 'ORBIT GALLERY // 3D MATRIX' : 'AUTONOMOUS CORE // SYS_REV.04'}
+                {activeVisual === 'orbit' ? 'REVOLVING ORBIT // CLICK EVENT CARD' : 'AUTONOMOUS CORE // SYS_REV.04'}
               </span>
             </div>
             <span className="text-[10px] font-mono-nav text-[#646e71]">
-              DRAG TO ROTATE • SCROLL TO ZOOM
+              CLICK ANY REVOLVING CARD TO OPEN EVENT & REGISTRATION
             </span>
           </div>
 
