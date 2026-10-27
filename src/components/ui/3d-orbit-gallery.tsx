@@ -2,7 +2,7 @@
 
 import React, { useRef, useMemo, useState, Suspense } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { OrbitControls, Html } from "@react-three/drei"
+import { OrbitControls } from "@react-three/drei"
 import * as THREE from "three"
 
 export interface ContestItem {
@@ -11,108 +11,160 @@ export interface ContestItem {
   tag: string
   code: string
   role: string
+  meta: string
 }
 
 export const CONTEST_LIST: ContestItem[] = [
-  { id: 'aerovision', title: 'AeroVision', tag: 'AERIAL EDGE AI', code: 'PROTOCOL_01', role: 'Autonomous AI Drone Grand Prix' },
-  { id: 'mechagauntlet', title: 'Mecha Gauntlet', tag: 'KINEMATICS & LEGGED BOTS', code: 'PROTOCOL_02', role: 'Quadruped & Bipedal Agility' },
-  { id: 'neurobotix', title: 'NeuroBotix', tag: 'HUMAN-ROBOT INTERACTION', code: 'PROTOCOL_03', role: 'Mind & Gesture Tele-Op' },
-  { id: 'cyberneticsalvage', title: 'Cyber Salvage', tag: 'DISASTER RESCUE SLAM', code: 'PROTOCOL_04', role: 'Subterranean SLAM Rescue' },
+  {
+    id: 'aerovision',
+    title: 'AeroVision',
+    tag: 'AERIAL EDGE AI',
+    code: 'PROTOCOL_01',
+    role: 'Autonomous AI Drone Grand Prix',
+    meta: 'PURSE: ₹30,000  •  COMPUTE: JETSON / RPI  •  AUTONOMOUS',
+  },
+  {
+    id: 'mechagauntlet',
+    title: 'Mecha Gauntlet',
+    tag: 'LEGGED KINEMATICS',
+    code: 'PROTOCOL_02',
+    role: 'Quadruped & Bipedal Agility Trial',
+    meta: 'PURSE: ₹35,000  •  STAIRS & BALANCE  •  DYNAMICS',
+  },
+  {
+    id: 'neurobotix',
+    title: 'NeuroBotix',
+    tag: 'NEURAL TELE-OP',
+    code: 'PROTOCOL_03',
+    role: 'Mind-Controlled & Gesture Tele-Op',
+    meta: 'PURSE: ₹25,000  •  OPENBCI EEG  •  PRECISION HRI',
+  },
+  {
+    id: 'cyberneticsalvage',
+    title: 'Cyber Salvage',
+    tag: 'SUBTERRANEAN SLAM',
+    code: 'PROTOCOL_04',
+    role: 'Disaster Search-and-Rescue SLAM',
+    meta: 'PURSE: ₹30,000  •  LIDAR & THERMAL  •  EXTRACTION',
+  },
 ]
 
 function createContestCanvasTexture(contest: ContestItem) {
   const canvas = document.createElement('canvas')
-  canvas.width = 512
-  canvas.height = 512
+  canvas.width = 1024
+  canvas.height = 660
   const ctx = canvas.getContext('2d')
   if (!ctx) return new THREE.Texture()
 
-  // Background
-  ctx.fillStyle = '#16191b'
-  ctx.fillRect(0, 0, 512, 512)
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = 'high'
 
-  // Outer Border
+  // Card background - AWE Machine Well (#16191b)
+  ctx.fillStyle = '#16191b'
+  ctx.fillRect(0, 0, 1024, 660)
+
+  // Outer Hairline Ash border (#252525)
   ctx.strokeStyle = '#252525'
   ctx.lineWidth = 10
-  ctx.strokeRect(8, 8, 496, 496)
+  ctx.strokeRect(10, 10, 1004, 640)
 
-  // Inner hairline
-  ctx.strokeStyle = '#444444'
+  // Inner framing hairline
+  ctx.strokeStyle = '#38383c'
   ctx.lineWidth = 2
-  ctx.strokeRect(24, 24, 464, 464)
+  ctx.strokeRect(28, 28, 968, 604)
 
-  // Protocol Code
+  // Header: Protocol Code
   ctx.fillStyle = '#646e71'
-  ctx.font = '300 22px monospace'
+  ctx.font = '300 24px monospace'
   ctx.textAlign = 'left'
-  ctx.fillText(contest.code, 42, 68)
+  ctx.fillText(contest.code, 52, 86)
 
-  // Tag
+  // Header: Category Tag (Right aligned)
+  ctx.textAlign = 'right'
   ctx.fillStyle = '#828b8d'
-  ctx.font = '400 18px monospace'
-  ctx.fillText(contest.tag, 42, 102)
+  ctx.font = '400 22px monospace'
+  ctx.fillText(contest.tag, 972, 86)
 
-  // Geometric Graphic Reticle
-  ctx.strokeStyle = '#e0e0e0'
-  ctx.lineWidth = 3
-  ctx.strokeRect(216, 160, 80, 80)
-  ctx.beginPath()
-  ctx.arc(256, 200, 14, 0, Math.PI * 2)
-  ctx.fillStyle = '#e0e0e0'
-  ctx.fill()
-  
-  // Crosshair lines
-  ctx.strokeStyle = '#444444'
+  // Structural hairline rule
+  ctx.strokeStyle = '#252525'
   ctx.lineWidth = 2
   ctx.beginPath()
-  ctx.moveTo(180, 200)
-  ctx.lineTo(332, 200)
-  ctx.moveTo(256, 124)
-  ctx.lineTo(256, 276)
+  ctx.moveTo(52, 116)
+  ctx.lineTo(972, 116)
   ctx.stroke()
 
-  // Title
-  ctx.fillStyle = '#e0e0e0'
-  ctx.font = '500 40px serif'
+  // Main Event Title (Cormorant Garamond display serif, #e0e0e0)
   ctx.textAlign = 'center'
-  ctx.fillText(contest.title, 256, 340)
+  ctx.fillStyle = '#e0e0e0'
+  ctx.font = '600 70px "Cormorant Garamond", Georgia, serif'
+  ctx.fillText(contest.title, 512, 225)
 
-  // Role
+  // Role / Subhead in Muted Steel
   ctx.fillStyle = '#828b8d'
-  ctx.font = '400 20px sans-serif'
-  ctx.fillText(contest.role, 256, 380)
+  ctx.font = '400 30px sans-serif'
+  ctx.fillText(contest.role, 512, 280)
 
-  // CTA
-  ctx.fillStyle = '#646e71'
-  ctx.font = '300 18px monospace'
-  ctx.fillText('[ CLICK TO INSPECT & REGISTER ]', 256, 440)
+  // Telemetry Row Box (#010101 Void inset)
+  ctx.fillStyle = '#010101'
+  ctx.fillRect(140, 330, 744, 76)
+  ctx.strokeStyle = '#252525'
+  ctx.lineWidth = 2
+  ctx.strokeRect(140, 330, 744, 76)
+
+  ctx.fillStyle = '#e0e0e0'
+  ctx.font = '300 22px monospace'
+  ctx.fillText(contest.meta, 512, 378)
+
+  // Bottom CTA Pill (#1f1f23 Charcoal Control with 100px radius style)
+  ctx.fillStyle = '#1f1f23'
+  if ('roundRect' in ctx) {
+    ctx.beginPath()
+    ctx.roundRect(240, 460, 544, 86, 43)
+    ctx.fill()
+    ctx.strokeStyle = '#444444'
+    ctx.lineWidth = 2
+    ctx.stroke()
+  } else {
+    ctx.fillRect(240, 460, 544, 86)
+  }
+
+  ctx.fillStyle = '#e0e0e0'
+  ctx.font = '500 26px monospace'
+  ctx.fillText('[ CLICK TO INSPECT & REGISTER ]', 512, 514)
 
   const texture = new THREE.CanvasTexture(canvas)
+  texture.minFilter = THREE.LinearFilter
+  texture.magFilter = THREE.LinearFilter
+  texture.generateMipmaps = true
   texture.needsUpdate = true
   return texture
 }
 
 export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: string) => void }) {
-  const PARTICLE_COUNT = 1500 
-  const PARTICLE_SIZE_MIN = 0.005
-  const PARTICLE_SIZE_MAX = 0.010
-  const SPHERE_RADIUS = 9
-  const POSITION_RANDOMNESS = 4
+  // Particle sphere background (clean starry ambient coordinates)
+  const PARTICLE_COUNT = 900
+  const PARTICLE_SIZE_MIN = 0.012
+  const PARTICLE_SIZE_MAX = 0.024
+  const SPHERE_RADIUS = 9.2
+  const POSITION_RANDOMNESS = 3.5
   const ROTATION_SPEED_X = 0.0
-  const ROTATION_SPEED_Y = 0.0005
-  const PARTICLE_OPACITY = 0.85
+  const ROTATION_SPEED_Y = 0.0006
+  const PARTICLE_OPACITY = 0.75
 
-  const IMAGE_COUNT = 24
-  const IMAGE_SIZE = 1.6 
+  // 8 Elements in the spiral as requested
+  const IMAGE_COUNT = 8
+  const CARD_WIDTH = 3.6
+  const CARD_HEIGHT = 2.3
 
   const groupRef = useRef<THREE.Group>(null)
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
-  // Procedural sharp textures representing the 4 contests
+  // Textures for 4 contests
   const textures = useMemo(() => {
     return CONTEST_LIST.map((c) => createContestCanvasTexture(c))
   }, [])
 
+  // Ambient Star Particles
   const particles = useMemo(() => {
     const list = []
     for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -127,18 +179,20 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
       list.push({
         position: [x, y, z] as [number, number, number],
         scale: Math.random() * (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN) + PARTICLE_SIZE_MIN,
-        color: new THREE.Color(Math.random() > 0.4 ? 0xe0e0e0 : 0x828b8d),
+        color: new THREE.Color(Math.random() > 0.35 ? 0xe0e0e0 : 0x646e71),
       })
     }
     return list
   }, [PARTICLE_COUNT, SPHERE_RADIUS, POSITION_RANDOMNESS, PARTICLE_SIZE_MIN, PARTICLE_SIZE_MAX])
 
+  // Exactly 8 Orbiting Large Contest Cards
   const orbitingImages = useMemo(() => {
     const list = []
     for (let i = 0; i < IMAGE_COUNT; i++) {
       const angle = (i / IMAGE_COUNT) * Math.PI * 2
       const x = SPHERE_RADIUS * Math.cos(angle)
-      const y = Math.sin((i / IMAGE_COUNT) * Math.PI * 4) * 0.8 // subtle wave elevation
+      // Gentle spiral wave elevation
+      const y = Math.sin((i / IMAGE_COUNT) * Math.PI * 2) * 1.2
       const z = SPHERE_RADIUS * Math.sin(angle)
 
       const position = new THREE.Vector3(x, y, z)
@@ -151,6 +205,7 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
       euler.setFromRotationMatrix(matrix)
       euler.z += Math.PI
 
+      // Cycle across our 4 contests (8 cards = 2 full loops of 4)
       const contest = CONTEST_LIST[i % CONTEST_LIST.length]
 
       list.push({
@@ -180,15 +235,15 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
         </mesh>
       ))}
 
-      {/* Orbiting Interactive Contest Placards */}
+      {/* Exactly 8 Large Orbiting Contest Placards */}
       {orbitingImages.map((img, idx) => {
         const isHovered = hoveredIdx === idx
         return (
           <mesh
-            key={`contest-card-${idx}`}
+            key={`orbit-card-${idx}`}
             position={img.position}
             rotation={img.rotation}
-            scale={isHovered ? [1.25, 1.25, 1.25] : [1, 1, 1]}
+            scale={isHovered ? [1.18, 1.18, 1.18] : [1, 1, 1]}
             onPointerOver={(e) => {
               e.stopPropagation()
               document.body.style.cursor = "pointer"
@@ -203,12 +258,12 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
               onSelectEvent?.(img.contest.title)
             }}
           >
-            <planeGeometry args={[IMAGE_SIZE, IMAGE_SIZE]} />
+            <planeGeometry args={[CARD_WIDTH, CARD_HEIGHT]} />
             <meshBasicMaterial
               map={textures[img.textureIndex]}
               side={THREE.DoubleSide}
               transparent
-              opacity={isHovered ? 1.0 : 0.9}
+              opacity={isHovered ? 1.0 : 0.95}
             />
           </mesh>
         )
@@ -226,8 +281,8 @@ export function OrbitGalleryCanvas({
 }) {
   return (
     <div className={`relative ${className}`}>
-      <Canvas camera={{ position: [-10, 1.5, 10], fov: 50 }}>
-        <ambientLight intensity={0.7} />
+      <Canvas camera={{ position: [-12, 2.2, 12], fov: 46 }}>
+        <ambientLight intensity={0.8} />
         <pointLight position={[10, 10, 10]} intensity={1.2} />
         <Suspense fallback={null}>
           <ParticleSphere onSelectEvent={onSelectEvent} />
