@@ -73,13 +73,13 @@ function createContestCanvasTexture(contest: ContestItem) {
   ctx.lineWidth = 2
   ctx.strokeRect(28, 28, 968, 604)
 
-  // Header: Protocol Code
+  // Header: Protocol Code (Top Left)
   ctx.fillStyle = '#646e71'
   ctx.font = '300 24px monospace'
   ctx.textAlign = 'left'
   ctx.fillText(contest.code, 52, 86)
 
-  // Header: Category Tag (Right aligned)
+  // Header: Category Tag (Top Right)
   ctx.textAlign = 'right'
   ctx.fillStyle = '#828b8d'
   ctx.font = '400 22px monospace'
@@ -93,7 +93,7 @@ function createContestCanvasTexture(contest: ContestItem) {
   ctx.lineTo(972, 116)
   ctx.stroke()
 
-  // Main Event Title (Cormorant Garamond display serif, #e0e0e0)
+  // Main Event Title (Cormorant Garamond display serif, #e0e0e0 Porcelain)
   ctx.textAlign = 'center'
   ctx.fillStyle = '#e0e0e0'
   ctx.font = '600 70px "Cormorant Garamond", Georgia, serif'
@@ -101,7 +101,7 @@ function createContestCanvasTexture(contest: ContestItem) {
 
   // Role / Subhead in Muted Steel
   ctx.fillStyle = '#828b8d'
-  ctx.font = '400 30px sans-serif'
+  ctx.font = '400 30px "Inter", sans-serif'
   ctx.fillText(contest.role, 512, 280)
 
   // Telemetry Row Box (#010101 Void inset)
@@ -115,7 +115,7 @@ function createContestCanvasTexture(contest: ContestItem) {
   ctx.font = '300 22px monospace'
   ctx.fillText(contest.meta, 512, 378)
 
-  // Bottom CTA Pill (#1f1f23 Charcoal Control with 100px radius style)
+  // Bottom CTA Pill (#1f1f23 Charcoal Control)
   ctx.fillStyle = '#1f1f23'
   if ('roundRect' in ctx) {
     ctx.beginPath()
@@ -136,12 +136,12 @@ function createContestCanvasTexture(contest: ContestItem) {
   texture.minFilter = THREE.LinearFilter
   texture.magFilter = THREE.LinearFilter
   texture.generateMipmaps = true
+  texture.flipY = true // Standard top-to-bottom canvas alignment
   texture.needsUpdate = true
   return texture
 }
 
 export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: string) => void }) {
-  // Particle sphere background (clean starry ambient coordinates)
   const PARTICLE_COUNT = 900
   const PARTICLE_SIZE_MIN = 0.012
   const PARTICLE_SIZE_MAX = 0.024
@@ -151,7 +151,7 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
   const ROTATION_SPEED_Y = 0.0006
   const PARTICLE_OPACITY = 0.75
 
-  // 8 Elements in the spiral as requested
+  // Exactly 8 Elements in the spiral
   const IMAGE_COUNT = 8
   const CARD_WIDTH = 3.6
   const CARD_HEIGHT = 2.3
@@ -185,32 +185,26 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
     return list
   }, [PARTICLE_COUNT, SPHERE_RADIUS, POSITION_RANDOMNESS, PARTICLE_SIZE_MIN, PARTICLE_SIZE_MAX])
 
-  // Exactly 8 Orbiting Large Contest Cards
+  // Exactly 8 Orbiting Large Contest Cards with CORRECT outward-facing orientation
   const orbitingImages = useMemo(() => {
     const list = []
+    const dummy = new THREE.Object3D()
+
     for (let i = 0; i < IMAGE_COUNT; i++) {
       const angle = (i / IMAGE_COUNT) * Math.PI * 2
       const x = SPHERE_RADIUS * Math.cos(angle)
-      // Gentle spiral wave elevation
-      const y = Math.sin((i / IMAGE_COUNT) * Math.PI * 2) * 1.2
+      const y = Math.sin((i / IMAGE_COUNT) * Math.PI * 2) * 1.0
       const z = SPHERE_RADIUS * Math.sin(angle)
 
-      const position = new THREE.Vector3(x, y, z)
-      const center = new THREE.Vector3(0, 0, 0)
-      const outwardDirection = position.clone().sub(center).normalize()
+      dummy.position.set(x, y, z)
+      // Point the front (+Z) of the plane radially outward so it faces the viewer right-side up
+      dummy.lookAt(x * 2, y, z * 2)
 
-      const euler = new THREE.Euler()
-      const matrix = new THREE.Matrix4()
-      matrix.lookAt(position, position.clone().add(outwardDirection), new THREE.Vector3(0, 1, 0))
-      euler.setFromRotationMatrix(matrix)
-      euler.z += Math.PI
-
-      // Cycle across our 4 contests (8 cards = 2 full loops of 4)
       const contest = CONTEST_LIST[i % CONTEST_LIST.length]
 
       list.push({
         position: [x, y, z] as [number, number, number],
-        rotation: [euler.x, euler.y, euler.z] as [number, number, number],
+        rotation: [dummy.rotation.x, dummy.rotation.y, dummy.rotation.z] as [number, number, number],
         contest,
         textureIndex: i % textures.length,
       })
@@ -235,7 +229,7 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
         </mesh>
       ))}
 
-      {/* Exactly 8 Large Orbiting Contest Placards */}
+      {/* 8 Correctly Oriented Orbiting Contest Placards */}
       {orbitingImages.map((img, idx) => {
         const isHovered = hoveredIdx === idx
         return (
