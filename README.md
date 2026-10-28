@@ -8,7 +8,7 @@
 |---|---|
 | **Live website** | `<PASTE LIVE URL HERE>` |
 | **GitHub repository** | https://github.com/preyanshw29/robotix_demo |
-| **Candidate** | `<Full Name>` · `<Roll No.>` · Electrical Engineering, NIT Raipur |
+| **Candidate** | `Priyanshu Tomar` · `3rd Sem` · Electrical Engineering, NIT Raipur |
 
 ---
 
