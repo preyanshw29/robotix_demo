@@ -1,81 +1,139 @@
-# ROBOFEST 2026 — Official Landing Page
-### Autonomous Systems Observatory & Robotics Arena | ROBOTiX Club, NIT Raipur
+# ROBOFEST 2026: Official Landing Page
 
-An elite, high-performance, responsive web application for **Robofest 2026**, the annual flagship robotics festival hosted by the **ROBOTiX Club** at the **National Institute of Technology (NIT), Raipur** under the aegis of **Anantya**.
+> **Theme: "AWE — Robot Observatory After Midnight"**
+> Submission for **ROBOTiX Club Recruitment 2026 · Web & App Development Domain · Round 1**
+> ROBOTiX Club, NIT Raipur
 
-Engineered following the **AWE — Robot Observatory After Midnight** design philosophy (`#010101` Void Canvas, `#16191b` Machine Wells, 1px `#252525` Hairline Ash grids, and `#1f1f23` Charcoal Control navigation pills) with shadcn/ui project structure, TypeScript, and interactive 3D WebGL Three.js orbits.
-
----
-
-## 📋 Submission Dossier
-
-### 1. Live Website Link
-- **Local Development Server:**
-  ```bash
-  cd C:\Users\priya\.gemini\antigravity\scratch\robofest-landing-page
-  npm run dev
-  ```
-  Open **[http://localhost:5173/](http://localhost:5173/)**
-- **Production Build & Preview:**
-  ```bash
-  npm run build
-  npm run preview
-  ```
-- **Deployment Ready:** Pre-configured with [`vercel.json`](file:///C:/Users/priya/.gemini/antigravity/scratch/robofest-landing-page/vercel.json) for 1-click deployment on **Vercel** or **Netlify**.
+| | |
+|---|---|
+| **Live website** | `<PASTE LIVE URL HERE>` |
+| **GitHub repository** | https://github.com/preyanshw29/robotix_demo |
+| **Candidate** | `<Full Name>` · `<Roll No.>` · Electrical Engineering, NIT Raipur |
 
 ---
 
-### 2. GitHub Repository Link
-Source code is committed and tracked in local Git. To push to GitHub:
+## 1. Theme
+
+**AWE: Robot Observatory After Midnight.**
+
+Robotics events usually get neon-cyan "cyberpunk" treatment. I went the other way: a quiet, dark, minimal observatory where the machines are the only thing glowing. The site reads like the control room of a night-time observatory. Everything is a telemetry readout, a coordinate, or a waypoint. The robot is the subject, not the decoration.
+
+- **Void Canvas** `#010101` background
+- **Machine Well** `#16191b` cards
+- **Charcoal Control** `#1f1f23` nav pills
+- **Hairline Ash** `#252525` 1px grid lines
+- **Porcelain** `#e0e0e0` primary text
+- **Muted Steel** `#828b8d` / **Faint Steel** `#646e71` secondary text, coordinates, counters
+
+No drop shadows anywhere. Depth comes from 1px hairlines and layering only.
+
+**Typography:** Cormorant Garamond for display headlines, Inter for interface and body text, IBM Plex Mono for telemetry, coordinates and navigation. (Chosen as open substitutes for licensed typefaces.)
+
+---
+
+## 2. About the Project
+
+A responsive landing page for **ROBOFEST 2026**, the annual robotics festival hosted by ROBOTiX Club, NIT Raipur. It is a frontend-only build with no backend, as the brief allows.
+
+### Brief checklist
+
+| Requirement | Where it is |
+|---|---|
+| Hero section with headline and CTA | Large display type, interactive 3D robotic core, register CTA |
+| About Robofest | About section with telemetry-style metrics |
+| At least 3 robotics events | **4** original events (below) plus an interactive radar simulator |
+| Registration section with CTA | Registration section with event details and a pass-issuance modal |
+| Footer with ROBOTiX Club branding | Footer with ROBOTiX / NIT Raipur coordinates and links |
+| Responsive on desktop and mobile | See Section 5 |
+
+### Events
+
+| Event | Concept |
+|---|---|
+| **AeroVision** | Autonomous drone racing |
+| **Mecha Gauntlet** | Quadruped and biped agility course |
+| **NeuroBotix** | Brainwave and gesture-controlled robotics |
+| **Cyber Salvage** | Subterranean search-and-rescue with SLAM |
+
+All four are original contest concepts written for this site.
+
+---
+
+## 3. Features
+
+- **Interactive 3D hero:** a gyroscopic robotic core rendered in WebGL with Three.js.
+- **3D orbit gallery:** contest placards orbit in 3D, scale up on hover, and open the registration modal on click.
+- **Radar waypoint simulator:** an interactive simulator in the Events section.
+- **Delegate pass generator:** registering issues a printable pass with a barcode and an `RF26-XXXX` ID. It supports print and save-as-PDF, and fires a confetti celebration on success.
+- **Procedural sound effects:** button and interaction feedback synthesised with the native Web Audio API (no audio files), with a toggle in the header.
+- **Telemetry-style UI language:** monospace coordinates, counters and hairline grids throughout.
+
+---
+
+## 4. Design Choices
+
+1. **Restraint over spectacle.** One dark palette, three typefaces, no shadows. The 3D elements stand out because nothing else competes with them.
+2. **Observatory metaphor, applied consistently.** Coordinates, waypoints, telemetry and a radar replace the usual generic "tech" icons.
+3. **Interaction with a purpose.** The pass generator turns the registration CTA into something tangible instead of a plain form.
+4. **Sound is opt-in and synthesised.** Web Audio keeps the bundle light, and the header toggle means it never ambushes anyone.
+
+---
+
+## 5. Responsiveness
+
+Built mobile-aware with Tailwind CSS utilities and tested on desktop and mobile widths. The 3D scenes and the header adapt to smaller viewports. `<Confirm your tested breakpoints/devices here>`
+
+---
+
+## 6. Tech Stack
+
+| Area | Tools |
+|---|---|
+| Framework | React 19, TypeScript |
+| Build tool | Vite 6 |
+| Styling | Tailwind CSS v4 |
+| 3D | Three.js, `@react-three/fiber`, `@react-three/drei` |
+| UI utilities | shadcn/ui project structure, Lucide Icons, clsx, tailwind-merge |
+| Effects | canvas-confetti |
+| Audio | Native Web Audio API |
+
+---
+
+## 7. AI Tools, Templates and Prebuilt Components (Disclosure)
+
+- **AI tools:** Antigravity AI Assistant helped with design system implementation, component composition and responsive optimisation. `<Add any other AI tool you used, e.g. ChatGPT, Claude, Copilot, and what for>`
+- **Templates:** No page template was used. The layout, theme, events and copy are original to this project.
+- **Prebuilt components and libraries:** the shadcn/ui structure and the open-source libraries listed in Section 6.
+- **Assets:** typefaces are open substitutes (Google Fonts). All event concepts and text are original.
+
+I can explain the structure and logic of every part of this codebase.
+
+---
+
+## 8. Run Locally
+
 ```bash
-git remote add origin https://github.com/<your-username>/robofest-2026.git
-git branch -M main
-git push -u origin main
+git clone https://github.com/preyanshw29/robotix_demo.git
+cd robotix_demo
+npm install
+npm run dev        # http://localhost:5173
+```
+
+Production build:
+
+```bash
+npm run build
+npm run preview
 ```
 
 ---
 
-### 3. Chosen Theme & Design Philosophy
-- **Theme:** **AWE — Robot Observatory After Midnight**
-- **Palette & Surfaces:**
-  - `Void Canvas` (`#010101`): Infinite dark plane.
-  - `Machine Well` (`#16191b`): Recessed 16px radius cards and 3D media bays.
-  - `Charcoal Control` (`#1f1f23`): 100px radius navigation pills and compact controls.
-  - `Hairline Ash` (`#252525`): 1px architectural grid lines without drop shadows.
-  - `Porcelain` (`#e0e0e0`): Primary display typography and icons.
-  - `Muted Steel` (`#828b8d`): Secondary explanations and technical body text.
-  - `Faint Steel` (`#646e71`): Mono coordinates and numeric counters `(01)`, `(04)`.
-- **Typography Pairing:**
-  - **Display:** *Cormorant Garamond* (Office Times Round substitute) at monumental size with `-3%` tracking.
-  - **Interface & Reading:** *Inter* (Messina Sans substitute) at 16px/1.4 for clean technical prose.
-  - **Telemetry & Navigation:** *IBM Plex Mono* (ABC Laica Mono substitute) at 13px with expanded tracking (`1.04px`).
 
----
 
-### 4. Project Description & Architectural Choices
-- **Interactive 3D Revolving Contest Spiral (`3d-orbit-gallery.tsx`):**
-  - Integrated into `@/components/ui/3d-orbit-gallery.tsx` within the shadcn directory structure.
-  - 8 large orbiting contest placards revolving outward around an ambient coordinate particle sphere.
-  - **Tactile Interaction:** Hovering scales the card up (`1.18x`) with cursor feedback. Clicking any card immediately launches the **Event Briefing & Delegate Registration Modal** pre-selected for that contest.
-- **4 Original Creative Contests:**
-  1. **AeroVision:** Autonomous AI Drone Grand Prix (100% Computer Vision, Jetson/RPi, neon optical gate navigation).
-  2. **Mecha Gauntlet:** Quadruped & Bipedal Agility Trial (Dynamic gait transitions, balance beams, stairs).
-  3. **NeuroBotix:** Mind-Controlled & Gesture Tele-Operation (OpenBCI EEG brainwaves and CV gesture manipulation).
-  4. **Cyber Salvage:** Subterranean Search-and-Rescue SLAM (Zero-visibility maze, LiDAR and thermal mapping).
-- **Interactive Radar Waypoint Simulator:** Live 2D telemetry radar with clickable waypoint nodes, live sensor feedback, and real-time contest specs.
-- **Instant Cryptographic Delegate Pass:** Real-time pass customizer with dynamic barcode, live ID generator (`RF26-XXXX`), print/PDF capability, and confetti celebration.
-- **Audio Feedback Synthesizer:** Native Web Audio API procedural synthesizer for subtle instrument button feedback (toggleable via the top-bar audio switch).
-- **Concise Copy:** Stripped of unnecessary filler text; replaced with punchy, museum-grade technical placards.
+## Credits
 
----
-
-### 5. Disclosure of AI Tools, Templates & Prebuilt Components
-- **AI Tooling:** Antigravity AI Assistant was utilized for design system implementation, component composition, and responsive optimization.
-- **Design Tokens:** Tokens and component rules derived from the AWE Network Design System (`awenetwork.ai`).
-- **Prebuilt Components:** Integrated and adapted `3d-orbit-gallery.tsx` into `@/components/ui/` with custom procedural canvas textures and click event handlers.
-- **Libraries Used:** React 19, Three.js, `@react-three/fiber`, `@react-three/drei`, Tailwind CSS v4, Lucide Icons, Canvas-Confetti, clsx, tailwind-merge.
-
----
+Built by **`<Full Name>`** for the ROBOTiX Club Recruitment 2026, Web & App Development Domain.
+ROBOTiX Club, NIT Raipur.
 
 ## 🛠️ Tech Stack & Directory Layout
 
