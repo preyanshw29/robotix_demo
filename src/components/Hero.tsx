@@ -18,13 +18,13 @@ export default function Hero({ onRegisterClick, playBeep }: HeroProps) {
   return (
     <section className="relative w-full pt-16 md:pt-24 pb-8 flex flex-col items-center">
       
-      {/* Editorial Monumental Headline with Ghost Purple Spectral Glow */}
-      <h1 className="font-display text-center text-[#f3e8ff] text-6xl sm:text-8xl md:text-[100px] leading-[1.0] select-none uppercase px-4 drop-shadow-[0_0_40px_rgba(168,85,247,0.3)]">
+      {/* Editorial Monumental Headline with High-Contrast Ghost Purple Spectral Glow */}
+      <h1 className="font-display text-center text-transparent bg-clip-text bg-gradient-to-b from-[#ffffff] via-[#fae8ff] to-[#e879f9] text-6xl sm:text-8xl md:text-[100px] leading-[1.0] select-none uppercase px-4 drop-shadow-[0_0_50px_rgba(232,121,249,0.5)]">
         Robofest
       </h1>
 
-      {/* Narrow Centered Supporting Paragraph in Muted Steel */}
-      <p className="mt-4 text-center text-[#8e889b] text-base sm:text-lg max-w-[540px] leading-[1.4] font-normal px-4">
+      {/* Narrow Centered Supporting Paragraph in Muted Lilac-Steel */}
+      <p className="mt-4 text-center text-[#c4b5d6] text-base sm:text-lg max-w-[540px] leading-[1.4] font-normal px-4">
         Autonomous systems observatory, kinetic trials, and robotics exhibition presented by ROBOTiX Club at NIT Raipur.
       </p>
 
@@ -33,7 +33,7 @@ export default function Hero({ onRegisterClick, playBeep }: HeroProps) {
         <a
           href="#contests"
           onClick={() => playBeep?.(850, 0.05)}
-          className="h-[38px] px-6 rounded-[100px] bg-[#16141f] hover:bg-[#231e30] border border-[#7e22ce]/40 hover:border-[#c084fc] hover:shadow-[0_0_20px_rgba(168,85,247,0.25)] text-[#e0e0e0] hover:text-[#f3e8ff] text-[13px] font-mono-nav tracking-[1.04px] flex items-center justify-center cursor-pointer transition-all"
+          className="h-[38px] px-6 rounded-[100px] bg-gradient-to-r from-[#180e28] via-[#10081c] to-[#07040d] hover:from-[#2e1065] hover:to-[#4a044e] border border-[#e879f9]/50 hover:border-[#fae8ff] hover:shadow-[0_0_25px_rgba(232,121,249,0.4)] text-[#fae8ff] hover:text-white text-[13px] font-mono-nav tracking-[1.04px] flex items-center justify-center cursor-pointer transition-all"
         >
           VIEW CONTESTS
         </a>
@@ -43,7 +43,7 @@ export default function Hero({ onRegisterClick, playBeep }: HeroProps) {
             playBeep?.(950, 0.05)
             onRegisterClick()
           }}
-          className="h-[38px] px-2 text-[#c084fc] hover:text-[#e9d5ff] text-[13px] font-mono-nav tracking-[1.04px] border-b border-[#a855f7]/60 hover:border-[#c084fc] transition-all cursor-pointer bg-transparent"
+          className="h-[38px] px-2 text-[#e879f9] hover:text-white text-[13px] font-mono-nav tracking-[1.04px] border-b border-[#e879f9] hover:border-white transition-all cursor-pointer bg-transparent drop-shadow-[0_0_8px_rgba(232,121,249,0.6)]"
         >
           DELEGATE PASS →
         </button>

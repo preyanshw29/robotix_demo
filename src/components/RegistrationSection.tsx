@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import { QrCode, ArrowUpRight, X, Download, FileText, CheckCircle2 } from 'lucide-react'
 import { CONTESTS } from './EventsSection'
+import GhostFlameBorder from './GhostFlameBorder'
 
 interface RegistrationProps {
   initialEvent: string
@@ -84,53 +85,57 @@ export default function RegistrationSection({
         {/* Subtle ghost flame aura in background */}
         <div className="absolute right-0 top-0 w-80 h-80 bg-[radial-gradient(circle,rgba(168,85,247,0.12)_0%,rgba(88,28,135,0.03)_60%,transparent_80%)] blur-2xl pointer-events-none" />
 
-        {/* Pass Visual */}
-        <div className="w-full max-w-[380px] rounded-2xl border border-[#7e22ce]/40 bg-[#09070f] p-5 relative shadow-[0_0_30px_rgba(168,85,247,0.15)] group hover:border-[#c084fc] transition-all">
-          <div className="flex items-center justify-between pb-3 border-b border-[#262130]">
-            <span className="text-[11px] font-mono-nav text-[#c084fc]">
-              DELEGATE PASS // '26
-            </span>
-            <span className="text-[11px] font-mono-nav text-[#a855f7]">
-              {formData.passId}
-            </span>
-          </div>
+        {/* Pass Visual with Undulating Flames & Scattering Embers */}
+        <div className="w-full max-w-[380px]">
+          <GhostFlameBorder radius={16} intensity="high" showEmbers={true}>
+            <div className="w-full rounded-2xl border border-[#c026d3]/50 bg-gradient-to-b from-[#180e28] via-[#10081c] to-[#07040d] p-5 relative shadow-[0_0_35px_rgba(217,70,239,0.25)] group hover:border-[#e879f9] transition-all">
+              <div className="flex items-center justify-between pb-3 border-b border-[#3b0764]/60">
+                <span className="text-[11px] font-mono-nav text-[#e879f9] drop-shadow-[0_0_6px_rgba(232,121,249,0.5)]">
+                  DELEGATE PASS // '26
+                </span>
+                <span className="text-[11px] font-mono-nav text-[#c084fc]">
+                  {formData.passId}
+                </span>
+              </div>
 
-          <div className="mt-4 flex items-start justify-between">
-            <div>
-              <span className="text-[10px] font-mono-nav text-[#8e889b] uppercase tracking-[2px] block">
-                OPERATIVE
-              </span>
-              <span className="text-base font-medium text-[#f3e8ff] block mt-0.5">
-                {formData.name || 'DELEGATE OPERATIVE'}
-              </span>
+              <div className="mt-4 flex items-start justify-between">
+                <div>
+                  <span className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-[2px] block">
+                    OPERATIVE
+                  </span>
+                  <span className="text-base font-medium text-[#fae8ff] block mt-0.5 drop-shadow-[0_0_8px_rgba(232,121,249,0.4)]">
+                    {formData.name || 'DELEGATE OPERATIVE'}
+                  </span>
 
-              <span className="text-[10px] font-mono-nav text-[#8e889b] uppercase tracking-[2px] block mt-2">
-                AFFILIATION
-              </span>
-              <span className="text-xs text-[#c084fc] block mt-0.5">
-                {formData.college || 'NIT Raipur'}
-              </span>
+                  <span className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-[2px] block mt-2">
+                    AFFILIATION
+                  </span>
+                  <span className="text-xs text-[#fae8ff] block mt-0.5">
+                    {formData.college || 'NIT Raipur'}
+                  </span>
+                </div>
+
+                <div className="p-2 rounded-lg bg-[#24133b] border border-[#e879f9]/50 shadow-[0_0_15px_rgba(217,70,239,0.4)]">
+                  <QrCode className="w-12 h-12 text-[#fae8ff]" />
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-[#3b0764]/60 flex items-center justify-between">
+                <span className="text-[11px] font-mono-nav text-[#a89cb8]">
+                  TRACK: <span className="text-[#fae8ff] font-medium">{formData.selectedEvent}</span>
+                </span>
+                <div className="flex gap-0.5 h-5 items-end">
+                  {[3, 6, 2, 5, 7, 3, 6, 4, 7, 3, 6].map((h, i) => (
+                    <span
+                      key={i}
+                      style={{ height: `${h * 2.5}px` }}
+                      className="w-[2px] bg-[#e879f9] inline-block shadow-[0_0_4px_#e879f9]"
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-
-            <div className="p-2 rounded-lg bg-[#16141f] border border-[#7e22ce]/40 shadow-[0_0_10px_rgba(168,85,247,0.2)]">
-              <QrCode className="w-12 h-12 text-[#c084fc]" />
-            </div>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-[#262130] flex items-center justify-between">
-            <span className="text-[11px] font-mono-nav text-[#8e889b]">
-              TRACK: <span className="text-[#f3e8ff]">{formData.selectedEvent}</span>
-            </span>
-            <div className="flex gap-0.5 h-5 items-end">
-              {[3, 6, 2, 5, 7, 3, 6, 4, 7, 3, 6].map((h, i) => (
-                <span
-                  key={i}
-                  style={{ height: `${h * 2.5}px` }}
-                  className="w-[2px] bg-[#a855f7] inline-block"
-                />
-              ))}
-            </div>
-          </div>
+          </GhostFlameBorder>
         </div>
 
         {/* Action Column */}

@@ -59,87 +59,87 @@ function createContestCanvasTexture(contest: ContestItem) {
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
 
-  // Card background - Obsidian Well with Ghost Purple undertone
-  ctx.fillStyle = '#110f18'
+  // Card background - High-Contrast Obsidian Violet Well
+  ctx.fillStyle = '#0f071a'
   ctx.fillRect(0, 0, 1024, 660)
 
-  // Outer Hairline Ghost Purple border (#7e22ce)
-  ctx.strokeStyle = '#581c87'
-  ctx.lineWidth = 8
+  // Outer Hairline Ghost Fuchsia/Violet border (#c026d3)
+  ctx.strokeStyle = '#c026d3'
+  ctx.lineWidth = 6
   ctx.strokeRect(10, 10, 1004, 640)
 
   // Inner framing hairline
-  ctx.strokeStyle = '#7e22ce'
-  ctx.lineWidth = 2
+  ctx.strokeStyle = '#e879f9'
+  ctx.lineWidth = 2.5
   ctx.strokeRect(28, 28, 968, 604)
 
-  // Glowing corner accents
-  ctx.fillStyle = '#c084fc'
-  ctx.fillRect(28, 28, 18, 3)
-  ctx.fillRect(28, 28, 3, 18)
-  ctx.fillRect(978, 28, 18, 3)
-  ctx.fillRect(993, 28, 3, 18)
-  ctx.fillRect(28, 629, 18, 3)
-  ctx.fillRect(28, 614, 3, 18)
-  ctx.fillRect(978, 629, 18, 3)
-  ctx.fillRect(993, 614, 3, 18)
+  // Glowing white-hot corner accents
+  ctx.fillStyle = '#fae8ff'
+  ctx.fillRect(28, 28, 22, 4)
+  ctx.fillRect(28, 28, 4, 22)
+  ctx.fillRect(974, 28, 22, 4)
+  ctx.fillRect(992, 28, 4, 22)
+  ctx.fillRect(28, 628, 22, 4)
+  ctx.fillRect(28, 610, 4, 22)
+  ctx.fillRect(974, 628, 22, 4)
+  ctx.fillRect(992, 610, 4, 22)
 
   // Header: Protocol Code (Top Left)
-  ctx.fillStyle = '#a855f7'
-  ctx.font = '300 24px monospace'
+  ctx.fillStyle = '#e879f9'
+  ctx.font = '600 24px monospace'
   ctx.textAlign = 'left'
   ctx.fillText(contest.code, 52, 86)
 
   // Header: Category Tag (Top Right)
   ctx.textAlign = 'right'
-  ctx.fillStyle = '#c084fc'
-  ctx.font = '400 22px monospace'
+  ctx.fillStyle = '#fae8ff'
+  ctx.font = '500 22px monospace'
   ctx.fillText(contest.tag, 972, 86)
 
   // Structural hairline rule
-  ctx.strokeStyle = '#3b2d4f'
+  ctx.strokeStyle = '#701a75'
   ctx.lineWidth = 2
   ctx.beginPath()
   ctx.moveTo(52, 116)
   ctx.lineTo(972, 116)
   ctx.stroke()
 
-  // Main Event Title (Cormorant Garamond display serif, #f3e8ff Ghost Lilac)
+  // Main Event Title (Cormorant Garamond display serif, #fae8ff White-hot Ghost Lilac)
   ctx.textAlign = 'center'
-  ctx.fillStyle = '#f3e8ff'
+  ctx.fillStyle = '#ffffff'
   ctx.font = '600 70px "Cormorant Garamond", Georgia, serif'
   ctx.fillText(contest.title, 512, 225)
 
-  // Role / Subhead in Muted Steel
-  ctx.fillStyle = '#c084fc'
-  ctx.font = '400 28px sans-serif'
+  // Role / Subhead in Electric Violet
+  ctx.fillStyle = '#e879f9'
+  ctx.font = '500 28px sans-serif'
   ctx.fillText(contest.role, 512, 280)
 
-  // Telemetry Row Box (#08070d Void inset with Ghost Purple border)
-  ctx.fillStyle = '#09070f'
+  // Telemetry Row Box (#07030d Void inset with Electric Violet border)
+  ctx.fillStyle = '#06020a'
   ctx.fillRect(140, 330, 744, 76)
-  ctx.strokeStyle = '#581c87'
+  ctx.strokeStyle = '#c026d3'
   ctx.lineWidth = 2
   ctx.strokeRect(140, 330, 744, 76)
 
-  ctx.fillStyle = '#e9d5ff'
-  ctx.font = '300 22px monospace'
+  ctx.fillStyle = '#fae8ff'
+  ctx.font = '400 22px monospace'
   ctx.fillText(contest.meta, 512, 378)
 
-  // Bottom CTA Pill (Ghost Purple degrading glow)
-  ctx.fillStyle = '#1c152a'
+  // Bottom CTA Pill (High-Contrast Neon Gradient)
+  ctx.fillStyle = '#4a044e'
   if ('roundRect' in ctx) {
     ctx.beginPath()
     ctx.roundRect(240, 460, 544, 86, 43)
     ctx.fill()
-    ctx.strokeStyle = '#a855f7'
-    ctx.lineWidth = 2.5
+    ctx.strokeStyle = '#e879f9'
+    ctx.lineWidth = 3
     ctx.stroke()
   } else {
     ctx.fillRect(240, 460, 544, 86)
   }
 
-  ctx.fillStyle = '#f3e8ff'
+  ctx.fillStyle = '#ffffff'
   ctx.font = '600 25px monospace'
   ctx.fillText('[ CLICK TO INSPECT & REGISTER ]', 512, 514)
 
@@ -193,17 +193,19 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
       const y = (Math.random() - 0.5) * 9
       const z = varZ * Math.sin(theta) * Math.sin(phi)
 
-      // Ghost Purple & Ethereal Lilac spectral star palette
+      // High-Contrast Ghost Purple & Saturated Fuchsia Flame spectrum
       const randColor = Math.random()
-      let pColor = 0xe9d5ff // Ghost lilac
-      if (randColor < 0.35) {
-        pColor = 0xc084fc // Ghost violet
-      } else if (randColor < 0.65) {
-        pColor = 0x9333ea // Deep purple flame
-      } else if (randColor < 0.85) {
-        pColor = 0xf3e8ff // Ethereal white-violet
+      let pColor = 0xfae8ff // White-hot ghost lilac
+      if (randColor < 0.28) {
+        pColor = 0xe879f9 // Neon fuchsia
+      } else if (randColor < 0.55) {
+        pColor = 0xc026d3 // Electric violet
+      } else if (randColor < 0.78) {
+        pColor = 0xa855f7 // Vibrant purple
+      } else if (randColor < 0.90) {
+        pColor = 0xffffff // Pure white star
       } else {
-        pColor = 0x581c87 // Phantom void purple
+        pColor = 0x701a75 // Deep amethyst flame
       }
 
       list.push({

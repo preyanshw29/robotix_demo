@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { ArrowUpRight, Target, Radio, Compass, Activity, Shield } from 'lucide-react'
+import GhostFlameBorder from './GhostFlameBorder'
 
 export interface ContestProtocol {
   id: string
@@ -214,9 +215,9 @@ function AeroVisionVisualizer({
         ctx.stroke()
       }
 
-      // 2. Speed Dust / Streamline Particles
+      // 2. Speed Dust / Streamline Particles (Electric Fuchsia Embers)
       particles.forEach((p) => {
-        p.z -= 4.5
+        p.z -= 5.0
         if (p.z <= 10) {
           p.z = 400
           p.x = (Math.random() - 0.5) * 500
@@ -227,11 +228,11 @@ function AeroVisionVisualizer({
         const py = vanishingY + p.y * scale
         const alpha = Math.min(1, Math.max(0, (400 - p.z) / 300))
 
-        ctx.fillStyle = `rgba(224, 224, 224, ${alpha * 0.6})`
+        ctx.fillStyle = p.z % 2 === 0 ? `rgba(232, 121, 249, ${alpha * 0.85})` : `rgba(250, 232, 255, ${alpha * 0.9})`
         ctx.fillRect(px, py, Math.max(1, 2.5 * scale), Math.max(1, 2.5 * scale))
       })
 
-      // 3. Receding 3D Optical Neon Ring Gates
+      // 3. Receding 3D Optical Neon Ring Gates in Ghost Fuchsia
       const gateCount = 4
       for (let g = 0; g < gateCount; g++) {
         const gateProgress = ((time * 0.35 + g * 0.25) % 1)
@@ -246,14 +247,16 @@ function AeroVisionVisualizer({
         ctx.save()
         ctx.translate(gx, gy)
 
-        // Gate ring rounded rectangle
-        ctx.strokeStyle = g === 0 ? 'rgba(255, 255, 255, 0.85)' : `rgba(200, 200, 200, ${alpha * 0.45})`
-        ctx.lineWidth = g === 0 ? 2 : 1.2
+        // Gate ring rounded rectangle with vivid neon glow
+        ctx.shadowColor = '#e879f9'
+        ctx.shadowBlur = g === 0 ? 16 : 8
+        ctx.strokeStyle = g === 0 ? 'rgba(250, 232, 255, 0.95)' : `rgba(232, 121, 249, ${alpha * 0.75})`
+        ctx.lineWidth = g === 0 ? 2.5 : 1.4
         ctx.strokeRect(-gw / 2, -gh / 2, gw, gh)
 
         // Optical LED corner markers on gate
         const cornerSize = 8 * scale
-        ctx.fillStyle = '#e0e0e0'
+        ctx.fillStyle = '#ffffff'
         ctx.fillRect(-gw / 2, -gh / 2, cornerSize, 2)
         ctx.fillRect(-gw / 2, -gh / 2, 2, cornerSize)
         ctx.fillRect(gw / 2 - cornerSize, -gh / 2, cornerSize, 2)
@@ -265,14 +268,14 @@ function AeroVisionVisualizer({
 
         // Gate ID Tag in perspective
         if (scale > 0.4) {
-          ctx.fillStyle = 'rgba(130, 139, 141, 0.7)'
+          ctx.fillStyle = '#fae8ff'
           ctx.font = '9px monospace'
           ctx.fillText(`GATE // 0${g + 1}`, -gw / 2 + 4, -gh / 2 - 5)
         }
         ctx.restore()
       }
 
-      // 4. Drone Cockpit HUD Crosshair & Attitude Horizon
+      // 4. Drone Cockpit HUD Crosshair & Attitude Horizon with Ion Flame Thrusters
       const droneX = cx + Math.sin(time * 1.4) * 55
       const droneY = cy + Math.cos(time * 1.1) * 28
       const bankAngle = Math.sin(time * 1.4) * 0.2
@@ -281,11 +284,29 @@ function AeroVisionVisualizer({
       ctx.translate(droneX, droneY)
       ctx.rotate(bankAngle)
 
-      // Drone Artificial Horizon Ladder
-      ctx.strokeStyle = 'rgba(224, 224, 224, 0.75)'
-      ctx.lineWidth = 1.2
+      // Drone Ion Thruster Flame Trails
+      const thrusterOffsets = [[-20, 18], [20, 18]]
+      thrusterOffsets.forEach(([tx, ty]) => {
+        const flameLen = 14 + Math.random() * 8
+        const flameGrad = ctx.createLinearGradient(tx, ty, tx, ty + flameLen)
+        flameGrad.addColorStop(0, '#ffffff')
+        flameGrad.addColorStop(0.3, '#fae8ff')
+        flameGrad.addColorStop(0.7, '#e879f9')
+        flameGrad.addColorStop(1, 'transparent')
+        ctx.fillStyle = flameGrad
+        ctx.beginPath()
+        ctx.moveTo(tx - 3, ty)
+        ctx.lineTo(tx + 3, ty)
+        ctx.lineTo(tx, ty + flameLen)
+        ctx.closePath()
+        ctx.fill()
+      })
 
       // Central Reticle
+      ctx.shadowColor = '#e879f9'
+      ctx.shadowBlur = 10
+      ctx.strokeStyle = '#fae8ff'
+      ctx.lineWidth = 1.4
       ctx.beginPath()
       ctx.arc(0, 0, 16, 0, Math.PI * 2)
       ctx.stroke()
@@ -316,8 +337,8 @@ function AeroVisionVisualizer({
       ]
       quadOffsets.forEach(([qx, qy]) => {
         // Arm
-        ctx.strokeStyle = 'rgba(100, 110, 113, 0.4)'
-        ctx.lineWidth = 1
+        ctx.strokeStyle = 'rgba(232, 121, 249, 0.5)'
+        ctx.lineWidth = 1.2
         ctx.beginPath()
         ctx.moveTo(0, 0)
         ctx.lineTo(qx, qy)
@@ -327,7 +348,7 @@ function AeroVisionVisualizer({
         ctx.save()
         ctx.translate(qx, qy)
         ctx.rotate(rotorAngle)
-        ctx.strokeStyle = 'rgba(224, 224, 224, 0.35)'
+        ctx.strokeStyle = 'rgba(250, 232, 255, 0.45)'
         ctx.beginPath()
         ctx.ellipse(0, 0, rotorRadius, rotorRadius / 3, 0, 0, Math.PI * 2)
         ctx.stroke()
@@ -367,7 +388,7 @@ function AeroVisionVisualizer({
   }, [current])
 
   return (
-    <div className="relative w-full h-[250px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
+    <div className="relative w-full h-[250px] rounded-xl bg-gradient-to-b from-[#0e0717] to-[#040108] border border-[#3b0764]/70 overflow-hidden select-none">
       <canvas ref={canvasRef} className="w-full h-full block" />
 
       {/* Interactive Waypoints */}
@@ -382,23 +403,23 @@ function AeroVisionVisualizer({
           }}
           className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 group cursor-pointer p-1"
         >
-          <div className="w-2.5 h-2.5 rounded-full border border-[#444444] bg-[#010101] group-hover:border-[#e0e0e0] group-hover:scale-150 transition-all flex items-center justify-center">
-            <div className="w-1 h-1 bg-[#e0e0e0] rounded-full" />
+          <div className="w-2.5 h-2.5 rounded-full border border-[#e879f9]/70 bg-[#160d24] group-hover:border-[#fae8ff] group-hover:scale-150 group-hover:shadow-[0_0_10px_#e879f9] transition-all flex items-center justify-center">
+            <div className="w-1 h-1 bg-[#fae8ff] rounded-full" />
           </div>
-          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/85 px-1.5 py-0.5 rounded border border-[#252525]/80">
-            {pt.label} <span className="text-[#828b8d]">[{pt.status}]</span>
+          <span className="text-[10px] font-mono-nav text-[#c4b5d6] group-hover:text-[#fae8ff] transition-colors whitespace-nowrap bg-[#10081c]/90 px-1.5 py-0.5 rounded border border-[#3b0764]/80">
+            {pt.label} <span className="text-[#e879f9]">[{pt.status}]</span>
           </span>
         </div>
       ))}
 
       {/* Bespoke Telemetry Badges */}
-      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0] animate-ping" />
-        <span>FLIGHT TELEMETRY // VEL: 21.4 M/S // LATENCY: 3.8 MS</span>
+      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#c4b5d6] pointer-events-none flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#e879f9] animate-ping" />
+        <span>FLIGHT TELEMETRY // VEL: <span className="text-[#fae8ff]">21.4 M/S</span> // LATENCY: <span className="text-[#fae8ff]">3.8 MS</span></span>
       </div>
-      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-3">
-        <span>OPTICAL FLOW: <span className="text-[#e0e0e0]">LOCKED</span></span>
-        <span>CIRCUIT: <span className="text-[#e0e0e0]">03/05</span></span>
+      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#c4b5d6] pointer-events-none flex items-center gap-3">
+        <span>OPTICAL FLOW: <span className="text-[#fae8ff]">LOCKED</span></span>
+        <span>CIRCUIT: <span className="text-[#fae8ff]">03/05</span></span>
       </div>
     </div>
   )
@@ -466,25 +487,29 @@ function MechaGauntletVisualizer({
       ctx.lineTo(width, height)
       ctx.closePath()
 
-      // Terrain Fill Gradient
+      // Terrain Fill Gradient (Deep Amethyst to Void Black)
       const terrainGrad = ctx.createLinearGradient(0, height * 0.4, 0, height)
-      terrainGrad.addColorStop(0, 'rgba(28, 30, 34, 0.8)')
-      terrainGrad.addColorStop(1, '#050505')
+      terrainGrad.addColorStop(0, 'rgba(74, 4, 78, 0.45)')
+      terrainGrad.addColorStop(0.5, 'rgba(46, 16, 101, 0.25)')
+      terrainGrad.addColorStop(1, '#05020a')
       ctx.fillStyle = terrainGrad
       ctx.fill()
 
-      // Terrain Surface Stroke
-      ctx.strokeStyle = '#38383e'
-      ctx.lineWidth = 1.5
+      // Terrain Surface Stroke with Electric Fuchsia Glow
+      ctx.shadowColor = '#e879f9'
+      ctx.shadowBlur = 6
+      ctx.strokeStyle = '#e879f9'
+      ctx.lineWidth = 1.8
       ctx.beginPath()
       for (let x = 0; x <= width; x += 3) {
         if (x === 0) ctx.moveTo(x, getGroundY(x))
         else ctx.lineTo(x, getGroundY(x))
       }
       ctx.stroke()
+      ctx.shadowBlur = 0
 
-      // Sub-surface hatching lines
-      ctx.strokeStyle = 'rgba(37, 37, 37, 0.4)'
+      // Sub-surface hatching lines in rich plum
+      ctx.strokeStyle = 'rgba(112, 26, 117, 0.35)'
       ctx.lineWidth = 1
       for (let x = 15; x < width; x += 22) {
         const gy = getGroundY(x)
@@ -513,23 +538,26 @@ function MechaGauntletVisualizer({
       ctx.translate(botX, bodyY)
       ctx.rotate(pitchAngle)
 
-      // Chassis Body
-      ctx.fillStyle = '#16191b'
+      // Chassis Body in Obsidian Amethyst
+      ctx.fillStyle = '#1c0f2e'
       ctx.fillRect(-chassisW / 2, -chassisH / 2, chassisW, chassisH)
-      ctx.strokeStyle = '#e0e0e0'
+      ctx.strokeStyle = '#e879f9'
       ctx.lineWidth = 1.5
       ctx.strokeRect(-chassisW / 2, -chassisH / 2, chassisW, chassisH)
 
-      // Battery / Sensor Head
-      ctx.fillStyle = '#252525'
+      // Sensor Head with Glowing White-Lilac Eye
+      ctx.fillStyle = '#3b0764'
       ctx.fillRect(chassisW / 2 - 8, -chassisH / 2 + 2, 7, 7)
       ctx.fillStyle = '#ffffff'
+      ctx.shadowColor = '#fae8ff'
+      ctx.shadowBlur = 8
       ctx.fillRect(chassisW / 2 - 4, -chassisH / 2 + 4, 3, 3)
+      ctx.shadowBlur = 0
 
       // Center of Mass (CoM) marker inside body
       ctx.beginPath()
       ctx.arc(0, 0, 4, 0, Math.PI * 2)
-      ctx.fillStyle = '#e0e0e0'
+      ctx.fillStyle = '#fae8ff'
       ctx.fill()
 
       ctx.restore()
@@ -569,15 +597,15 @@ function MechaGauntletVisualizer({
         const kneeY = hipY + Math.sin(angleBase + kneeSign * (kneeBend / 2)) * l1
 
         // Draw Upper Leg
-        ctx.strokeStyle = idx < 2 ? '#646e71' : '#e0e0e0'
-        ctx.lineWidth = 2
+        ctx.strokeStyle = idx < 2 ? '#701a75' : '#c026d3'
+        ctx.lineWidth = 2.2
         ctx.beginPath()
         ctx.moveTo(hipX, hipY)
         ctx.lineTo(kneeX, kneeY)
         ctx.stroke()
 
         // Draw Lower Leg / Piston
-        ctx.strokeStyle = '#e0e0e0'
+        ctx.strokeStyle = '#e879f9'
         ctx.beginPath()
         ctx.moveTo(kneeX, kneeY)
         ctx.lineTo(footStepX, targetFootY)
@@ -586,16 +614,22 @@ function MechaGauntletVisualizer({
         // Foot Contact Paw
         ctx.beginPath()
         ctx.arc(footStepX, targetFootY, 2.8, 0, Math.PI * 2)
-        ctx.fillStyle = footLift < 2 ? '#ffffff' : '#828b8d'
+        ctx.fillStyle = footLift < 2 ? '#fae8ff' : '#c026d3'
         ctx.fill()
 
-        // Ground Reaction Force (GRF) Vector Spike when foot is planted
+        // Ground Reaction Force (GRF) Vector Spike & Impact Dust Spark when foot is planted
         if (footLift < 2) {
-          ctx.strokeStyle = 'rgba(224, 224, 224, 0.45)'
-          ctx.lineWidth = 1.2
+          ctx.strokeStyle = 'rgba(232, 121, 249, 0.75)'
+          ctx.lineWidth = 1.5
           ctx.beginPath()
           ctx.moveTo(footStepX, targetFootY)
-          ctx.lineTo(footStepX, targetFootY + 12)
+          ctx.lineTo(footStepX, targetFootY + 14)
+          ctx.stroke()
+
+          // Impact contact shockwave ring
+          ctx.beginPath()
+          ctx.ellipse(footStepX, targetFootY, 6, 2, 0, 0, Math.PI * 2)
+          ctx.strokeStyle = 'rgba(250, 232, 255, 0.6)'
           ctx.stroke()
         }
       })
@@ -628,7 +662,7 @@ function MechaGauntletVisualizer({
   }, [current])
 
   return (
-    <div className="relative w-full h-[250px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
+    <div className="relative w-full h-[250px] rounded-xl bg-gradient-to-b from-[#0e0717] to-[#040108] border border-[#3b0764]/70 overflow-hidden select-none">
       <canvas ref={canvasRef} className="w-full h-full block" />
 
       {/* Interactive Waypoints */}
@@ -643,23 +677,23 @@ function MechaGauntletVisualizer({
           }}
           className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 group cursor-pointer p-1"
         >
-          <div className="w-2.5 h-2.5 rounded-full border border-[#444444] bg-[#010101] group-hover:border-[#e0e0e0] group-hover:scale-150 transition-all flex items-center justify-center">
-            <div className="w-1 h-1 bg-[#e0e0e0] rounded-full" />
+          <div className="w-2.5 h-2.5 rounded-full border border-[#e879f9]/70 bg-[#160d24] group-hover:border-[#fae8ff] group-hover:scale-150 group-hover:shadow-[0_0_10px_#e879f9] transition-all flex items-center justify-center">
+            <div className="w-1 h-1 bg-[#fae8ff] rounded-full" />
           </div>
-          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/85 px-1.5 py-0.5 rounded border border-[#252525]/80">
-            {pt.label} <span className="text-[#828b8d]">[{pt.status}]</span>
+          <span className="text-[10px] font-mono-nav text-[#c4b5d6] group-hover:text-[#fae8ff] transition-colors whitespace-nowrap bg-[#10081c]/90 px-1.5 py-0.5 rounded border border-[#3b0764]/80">
+            {pt.label} <span className="text-[#e879f9]">[{pt.status}]</span>
           </span>
         </div>
       ))}
 
       {/* Bespoke Telemetry Badges */}
-      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0] animate-ping" />
-        <span>IMU BALANCE // PITCH: +3.2° // ROLL: -0.4° // STABILITY: 98.6%</span>
+      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#c4b5d6] pointer-events-none flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#e879f9] animate-ping" />
+        <span>IMU BALANCE // PITCH: <span className="text-[#fae8ff]">+3.2°</span> // STABILITY: <span className="text-[#fae8ff]">98.6%</span></span>
       </div>
-      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-3">
-        <span>GAIT: <span className="text-[#e0e0e0]">COMPLIANT TROT</span></span>
-        <span>TORQUE: <span className="text-[#e0e0e0]">24.8 Nm</span></span>
+      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#c4b5d6] pointer-events-none flex items-center gap-3">
+        <span>GAIT: <span className="text-[#fae8ff]">COMPLIANT TROT</span></span>
+        <span>TORQUE: <span className="text-[#fae8ff]">24.8 Nm</span></span>
       </div>
     </div>
   )
@@ -714,13 +748,14 @@ function NeuroBotixVisualizer({
       const alphaBaseY = height * 0.32
       const betaBaseY = height * 0.65
 
-      // Channel 1: Alpha Waves (8-12 Hz) - Smooth focus rhythms
-      ctx.strokeStyle = '#e0e0e0'
-      ctx.lineWidth = 1.4
+      // Channel 1: Alpha Waves (8-12 Hz) - Smooth focus rhythms in White-hot Ghost Lilac
+      ctx.shadowColor = '#e879f9'
+      ctx.shadowBlur = 8
+      ctx.strokeStyle = '#fae8ff'
+      ctx.lineWidth = 1.6
       ctx.beginPath()
       for (let x = 20; x < eegWidth; x += 2) {
         const tOffset = (x - 20) * 0.08 - time * 4
-        // Complex EEG packet synthesis
         const yVal =
           Math.sin(tOffset) * 14 * Math.sin(tOffset * 0.2) +
           Math.sin(tOffset * 1.8) * 4
@@ -728,15 +763,18 @@ function NeuroBotixVisualizer({
         else ctx.lineTo(x, alphaBaseY + yVal)
       }
       ctx.stroke()
+      ctx.shadowBlur = 0
 
       // Alpha Channel Label
-      ctx.fillStyle = '#828b8d'
+      ctx.fillStyle = '#e879f9'
       ctx.font = '9px monospace'
-      ctx.fillText('CH 01 // ALPHA BAND [10.2 Hz]', 20, alphaBaseY - 20)
+      ctx.fillText('CH 01 // ALPHA BAND [10.2 Hz SYNCHRONIZED]', 20, alphaBaseY - 20)
 
-      // Channel 2: Beta Waves (13-30 Hz) - Dynamic high frequency bursts
-      ctx.strokeStyle = 'rgba(200, 200, 200, 0.7)'
-      ctx.lineWidth = 1.2
+      // Channel 2: Beta Waves (13-30 Hz) - Dynamic high frequency bursts in Electric Fuchsia
+      ctx.shadowColor = '#c026d3'
+      ctx.shadowBlur = 6
+      ctx.strokeStyle = '#e879f9'
+      ctx.lineWidth = 1.4
       ctx.beginPath()
       for (let x = 20; x < eegWidth; x += 2) {
         const tOffset = (x - 20) * 0.16 - time * 6
@@ -748,13 +786,14 @@ function NeuroBotixVisualizer({
         else ctx.lineTo(x, betaBaseY + yVal)
       }
       ctx.stroke()
+      ctx.shadowBlur = 0
 
       // Beta Channel Label
-      ctx.fillStyle = '#828b8d'
-      ctx.fillText('CH 02 // BETA BAND [22.4 Hz FOCUS]', 20, betaBaseY - 18)
+      ctx.fillStyle = '#c084fc'
+      ctx.fillText('CH 02 // BETA BAND [22.4 Hz COGNITIVE FOCUS]', 20, betaBaseY - 18)
 
-      // Oscilloscope background horizontal calibration lines
-      ctx.strokeStyle = 'rgba(37, 37, 37, 0.4)'
+      // Oscilloscope background horizontal calibration lines in plum
+      ctx.strokeStyle = 'rgba(112, 26, 117, 0.4)'
       ctx.lineWidth = 0.8
       ;[alphaBaseY - 12, alphaBaseY + 12, betaBaseY - 12, betaBaseY + 12].forEach((ly) => {
         ctx.beginPath()
@@ -763,13 +802,17 @@ function NeuroBotixVisualizer({
         ctx.stroke()
       })
 
-      // FFT Frequency Spectrum Bars at bottom of left pane
+      // FFT Frequency Spectrum Bars (Vertical Flame Pillars)
       const barCount = 14
       for (let b = 0; b < barCount; b++) {
-        const barH = 5 + Math.abs(Math.sin(time * 3 + b * 0.7)) * 20
+        const barH = 5 + Math.abs(Math.sin(time * 3 + b * 0.7)) * 22
         const bx = 20 + b * 8
         const by = height - 25
-        ctx.fillStyle = b === 4 || b === 5 ? '#e0e0e0' : 'rgba(100, 110, 113, 0.5)'
+        const barGrad = ctx.createLinearGradient(bx, by, bx, by - barH)
+        barGrad.addColorStop(0, '#4a044e')
+        barGrad.addColorStop(0.6, '#c026d3')
+        barGrad.addColorStop(1, '#fae8ff')
+        ctx.fillStyle = barGrad
         ctx.fillRect(bx, by - barH, 5, barH)
       }
 
@@ -798,31 +841,33 @@ function NeuroBotixVisualizer({
       const elbowX = armBaseX + Math.cos(armBaseAngle - elbowAngle / 2) * armL1
       const elbowY = armBaseY + Math.sin(armBaseAngle - elbowAngle / 2) * armL1
 
-      // Draw Robotic Arm Segments
-      // Base Mount
-      ctx.fillStyle = '#222226'
+      // Draw Robotic Arm Segments in Titanium Obsidian & Fuchsia Joints
+      ctx.fillStyle = '#24133b'
       ctx.beginPath()
       ctx.arc(armBaseX, armBaseY, 10, 0, Math.PI * 2)
       ctx.fill()
-      ctx.strokeStyle = '#e0e0e0'
+      ctx.strokeStyle = '#e879f9'
       ctx.stroke()
 
       // Link 1
-      ctx.strokeStyle = '#e0e0e0'
+      ctx.strokeStyle = '#c026d3'
       ctx.lineWidth = 3
       ctx.beginPath()
       ctx.moveTo(armBaseX, armBaseY)
       ctx.lineTo(elbowX, elbowY)
       ctx.stroke()
 
-      // Elbow Joint
+      // Elbow Joint with Glowing Core
       ctx.beginPath()
       ctx.arc(elbowX, elbowY, 5, 0, Math.PI * 2)
-      ctx.fillStyle = '#ffffff'
+      ctx.fillStyle = '#fae8ff'
+      ctx.shadowColor = '#e879f9'
+      ctx.shadowBlur = 8
       ctx.fill()
+      ctx.shadowBlur = 0
 
       // Link 2
-      ctx.strokeStyle = '#c0c0c0'
+      ctx.strokeStyle = '#e879f9'
       ctx.lineWidth = 2.2
       ctx.beginPath()
       ctx.moveTo(elbowX, elbowY)
@@ -833,9 +878,11 @@ function NeuroBotixVisualizer({
       ctx.save()
       ctx.translate(targetX, targetY)
 
-      // Laser Targeting Reticle
-      ctx.strokeStyle = 'rgba(224, 224, 224, 0.85)'
-      ctx.lineWidth = 1.2
+      // Laser Targeting Reticle with Ghost Flame Glow
+      ctx.shadowColor = '#e879f9'
+      ctx.shadowBlur = 10
+      ctx.strokeStyle = '#fae8ff'
+      ctx.lineWidth = 1.4
       ctx.beginPath()
       ctx.arc(0, 0, 16, 0, Math.PI * 2)
       ctx.stroke()
@@ -851,9 +898,11 @@ function NeuroBotixVisualizer({
       ctx.moveTo(0, 12)
       ctx.lineTo(0, 22)
       ctx.stroke()
+      ctx.shadowBlur = 0
 
       // Gripper Pincers
       const gripAngle = 0.2 + Math.abs(Math.sin(time * 3)) * 0.2
+      ctx.strokeStyle = '#fae8ff'
       ctx.beginPath()
       ctx.moveTo(0, 0)
       ctx.lineTo(Math.cos(gripAngle) * 12, Math.sin(gripAngle) * 12)
@@ -881,7 +930,7 @@ function NeuroBotixVisualizer({
   }, [current])
 
   return (
-    <div className="relative w-full h-[250px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
+    <div className="relative w-full h-[250px] rounded-xl bg-gradient-to-b from-[#0e0717] to-[#040108] border border-[#3b0764]/70 overflow-hidden select-none">
       <canvas ref={canvasRef} className="w-full h-full block" />
 
       {/* Interactive Waypoints */}
@@ -896,23 +945,23 @@ function NeuroBotixVisualizer({
           }}
           className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 group cursor-pointer p-1"
         >
-          <div className="w-2.5 h-2.5 rounded-full border border-[#444444] bg-[#010101] group-hover:border-[#e0e0e0] group-hover:scale-150 transition-all flex items-center justify-center">
-            <div className="w-1 h-1 bg-[#e0e0e0] rounded-full" />
+          <div className="w-2.5 h-2.5 rounded-full border border-[#e879f9]/70 bg-[#160d24] group-hover:border-[#fae8ff] group-hover:scale-150 group-hover:shadow-[0_0_10px_#e879f9] transition-all flex items-center justify-center">
+            <div className="w-1 h-1 bg-[#fae8ff] rounded-full" />
           </div>
-          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/85 px-1.5 py-0.5 rounded border border-[#252525]/80">
-            {pt.label} <span className="text-[#828b8d]">[{pt.status}]</span>
+          <span className="text-[10px] font-mono-nav text-[#c4b5d6] group-hover:text-[#fae8ff] transition-colors whitespace-nowrap bg-[#10081c]/90 px-1.5 py-0.5 rounded border border-[#3b0764]/80">
+            {pt.label} <span className="text-[#e879f9]">[{pt.status}]</span>
           </span>
         </div>
       ))}
 
       {/* Bespoke Telemetry Badges */}
-      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0] animate-ping" />
-        <span>NEURAL COHERENCE: 95.4% // OPENBCI 8-CH // LATENCY: 11 MS</span>
+      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#c4b5d6] pointer-events-none flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#e879f9] animate-ping" />
+        <span>NEURAL COHERENCE: <span className="text-[#fae8ff]">96.8%</span> // LATENCY: <span className="text-[#fae8ff]">9 MS</span></span>
       </div>
-      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-3">
-        <span>ARM DOF: <span className="text-[#e0e0e0]">6 AXIS</span></span>
-        <span>SERVO SYNC: <span className="text-[#e0e0e0]">OPTIMAL</span></span>
+      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#c4b5d6] pointer-events-none flex items-center gap-3">
+        <span>ARM DOF: <span className="text-[#fae8ff]">6 AXIS</span></span>
+        <span>SERVO SYNC: <span className="text-[#fae8ff]">OPTIMAL</span></span>
       </div>
     </div>
   )
@@ -969,8 +1018,8 @@ function CyberSalvageVisualizer({
       const roverY = height * 0.42 + Math.cos(time * 0.3) * (height * 0.12)
 
       // 1. Draw Occupancy Grid Laser Dot Field (LiDAR Point Cloud)
-      ctx.strokeStyle = '#222226'
-      ctx.lineWidth = 1.2
+      ctx.strokeStyle = '#3b0764'
+      ctx.lineWidth = 1.4
       walls.forEach(([x1, y1, x2, y2]) => {
         ctx.beginPath()
         ctx.moveTo(x1, y1)
@@ -978,7 +1027,7 @@ function CyberSalvageVisualizer({
         ctx.stroke()
       })
 
-      // 2. 360° LiDAR Ray-Cast Beam Sweep
+      // 2. 360° LiDAR Ray-Cast Beam Sweep in Saturated Electric Fuchsia
       const rayCount = 80
       for (let r = 0; r < rayCount; r++) {
         const offset = (r / rayCount) * (Math.PI / 3)
@@ -987,27 +1036,30 @@ function CyberSalvageVisualizer({
         const rayEndX = roverX + Math.cos(angle) * maxDist
         const rayEndY = roverY + Math.sin(angle) * maxDist
 
-        const alpha = Math.max(0, 0.4 * (1 - r / rayCount))
-        ctx.strokeStyle = `rgba(224, 224, 224, ${alpha})`
-        ctx.lineWidth = 0.8
+        const alpha = Math.max(0, 0.5 * (1 - r / rayCount))
+        ctx.strokeStyle = `rgba(232, 121, 249, ${alpha})`
+        ctx.lineWidth = 1.0
         ctx.beginPath()
         ctx.moveTo(roverX, roverY)
         ctx.lineTo(rayEndX, rayEndY)
         ctx.stroke()
 
-        // Point cloud contact reflection dots
+        // Point cloud contact reflection dots (White-hot lilac embers)
         if (r % 3 === 0) {
           const hitDist = maxDist * (0.6 + Math.sin(angle * 5) * 0.3)
           const hx = roverX + Math.cos(angle) * hitDist
           const hy = roverY + Math.sin(angle) * hitDist
           ctx.beginPath()
-          ctx.arc(hx, hy, 1.5, 0, Math.PI * 2)
-          ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 1.5})`
+          ctx.arc(hx, hy, 1.8, 0, Math.PI * 2)
+          ctx.fillStyle = `rgba(250, 232, 255, ${alpha * 2})`
+          ctx.shadowColor = '#e879f9'
+          ctx.shadowBlur = 6
           ctx.fill()
+          ctx.shadowBlur = 0
         }
       }
 
-      // 3. FLIR Thermal Casualty Heat Beacon (Pulsing IR signature)
+      // 3. FLIR Thermal Casualty Heat Beacon (Pulsing Infrared Ghost Flame)
       const thermalX = width * 0.72
       const thermalY = height * 0.35
       const pulseSize = 25 + Math.sin(time * 4) * 8
@@ -1020,8 +1072,10 @@ function CyberSalvageVisualizer({
         thermalY,
         pulseSize
       )
-      thermalGrad.addColorStop(0, 'rgba(255, 255, 255, 0.8)')
-      thermalGrad.addColorStop(0.3, 'rgba(180, 180, 180, 0.35)')
+      thermalGrad.addColorStop(0, '#ffffff')
+      thermalGrad.addColorStop(0.25, '#fae8ff')
+      thermalGrad.addColorStop(0.55, 'rgba(232, 121, 249, 0.5)')
+      thermalGrad.addColorStop(0.85, 'rgba(112, 26, 117, 0.25)')
       thermalGrad.addColorStop(1, 'transparent')
 
       ctx.fillStyle = thermalGrad
@@ -1030,37 +1084,40 @@ function CyberSalvageVisualizer({
       ctx.fill()
 
       // Thermal contour circle
-      ctx.strokeStyle = 'rgba(224, 224, 224, 0.5)'
-      ctx.lineWidth = 1
+      ctx.strokeStyle = 'rgba(232, 121, 249, 0.7)'
+      ctx.lineWidth = 1.2
       ctx.beginPath()
       ctx.arc(thermalX, thermalY, pulseSize, 0, Math.PI * 2)
       ctx.stroke()
 
-      // Thermal readout tag
-      ctx.fillStyle = '#e0e0e0'
-      ctx.font = '9px monospace'
+      // Thermal readout tag with white-hot lilac text
+      ctx.fillStyle = '#fae8ff'
+      ctx.font = '600 9px monospace'
+      ctx.shadowColor = '#e879f9'
+      ctx.shadowBlur = 6
       ctx.fillText('37.2°C // LIFE DETECTED', thermalX + 16, thermalY - 5)
+      ctx.shadowBlur = 0
 
       // 4. Rover Chassis Icon & Breadcrumb Path
       ctx.save()
       ctx.translate(roverX, roverY)
 
       // Rover Body
-      ctx.fillStyle = '#16191b'
+      ctx.fillStyle = '#24133b'
       ctx.fillRect(-12, -8, 24, 16)
-      ctx.strokeStyle = '#e0e0e0'
-      ctx.lineWidth = 1.2
+      ctx.strokeStyle = '#e879f9'
+      ctx.lineWidth = 1.4
       ctx.strokeRect(-12, -8, 24, 16)
 
       // Rotating LiDAR sensor dome
       ctx.beginPath()
       ctx.arc(0, 0, 4, 0, Math.PI * 2)
-      ctx.fillStyle = '#ffffff'
+      ctx.fillStyle = '#fae8ff'
       ctx.fill()
 
       // Heading direction pointer
       ctx.rotate(sweepAngle * 0.2)
-      ctx.strokeStyle = '#e0e0e0'
+      ctx.strokeStyle = '#fae8ff'
       ctx.beginPath()
       ctx.moveTo(0, 0)
       ctx.lineTo(16, 0)
@@ -1086,7 +1143,7 @@ function CyberSalvageVisualizer({
   }, [current])
 
   return (
-    <div className="relative w-full h-[250px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
+    <div className="relative w-full h-[250px] rounded-xl bg-gradient-to-b from-[#0e0717] to-[#040108] border border-[#3b0764]/70 overflow-hidden select-none">
       <canvas ref={canvasRef} className="w-full h-full block" />
 
       {/* Interactive Waypoints */}
@@ -1101,23 +1158,23 @@ function CyberSalvageVisualizer({
           }}
           className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 group cursor-pointer p-1"
         >
-          <div className="w-2.5 h-2.5 rounded-full border border-[#444444] bg-[#010101] group-hover:border-[#e0e0e0] group-hover:scale-150 transition-all flex items-center justify-center">
-            <div className="w-1 h-1 bg-[#e0e0e0] rounded-full" />
+          <div className="w-2.5 h-2.5 rounded-full border border-[#e879f9]/70 bg-[#160d24] group-hover:border-[#fae8ff] group-hover:scale-150 group-hover:shadow-[0_0_10px_#e879f9] transition-all flex items-center justify-center">
+            <div className="w-1 h-1 bg-[#fae8ff] rounded-full" />
           </div>
-          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/85 px-1.5 py-0.5 rounded border border-[#252525]/80">
-            {pt.label} <span className="text-[#828b8d]">[{pt.status}]</span>
+          <span className="text-[10px] font-mono-nav text-[#c4b5d6] group-hover:text-[#fae8ff] transition-colors whitespace-nowrap bg-[#10081c]/90 px-1.5 py-0.5 rounded border border-[#3b0764]/80">
+            {pt.label} <span className="text-[#e879f9]">[{pt.status}]</span>
           </span>
         </div>
       ))}
 
       {/* Bespoke Telemetry Badges */}
-      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0] animate-ping" />
-        <span>LIDAR OCCUPANCY GRID // MAP CONFIDENCE: 92.4% // 2D SLAM</span>
+      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#c4b5d6] pointer-events-none flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#e879f9] animate-ping" />
+        <span>LIDAR OCCUPANCY GRID // MAP CONFIDENCE: <span className="text-[#fae8ff]">94.2%</span> // 2D SLAM</span>
       </div>
-      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-3">
-        <span>THERMAL: <span className="text-[#e0e0e0]">37.2°C DETECTED</span></span>
-        <span>VISIBILITY: <span className="text-[#e0e0e0]">ZERO (SMOKE)</span></span>
+      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#c4b5d6] pointer-events-none flex items-center gap-3">
+        <span>THERMAL: <span className="text-[#fae8ff]">37.2°C DETECTED</span></span>
+        <span>VISIBILITY: <span className="text-[#e879f9]">ZERO (SMOKE)</span></span>
       </div>
     </div>
   )
@@ -1233,86 +1290,88 @@ export default function EventsSection({
         </div>
       </div>
 
-      {/* Lusion-Style Interactive 3D Tilt Card with Reactive Ghost Purple Cursor Spotlight & Degrading Flame Aura */}
-      <div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transform: mousePos.isHover
-            ? `perspective(1000px) rotateX(${mousePos.rx}deg) rotateY(${mousePos.ry}deg) scale3d(1.01, 1.01, 1.01)`
-            : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
-          transition: mousePos.isHover ? 'transform 0.1s ease-out' : 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        }}
-        className="group mt-8 relative rounded-2xl bg-[#13111a] border border-[#7e22ce]/35 p-6 sm:p-8 shadow-[0_25px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(168,85,247,0.14),inset_0_0_25px_rgba(88,28,135,0.1)] select-none overflow-hidden"
-      >
-        {/* Ghost Purple Degrading Flame Rim Aura behind card */}
-        <div className="absolute -inset-1 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.15)_0%,rgba(88,28,135,0.04)_50%,transparent_75%)] pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity" />
+      {/* Lusion-Style Interactive 3D Tilt Card Wrapped in Animated Licking Flames & Scattering Dust Embers */}
+      <GhostFlameBorder radius={16} intensity="high" showEmbers={true} className="mt-8">
+        <div
+          ref={cardRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            transform: mousePos.isHover
+              ? `perspective(1000px) rotateX(${mousePos.rx}deg) rotateY(${mousePos.ry}deg) scale3d(1.01, 1.01, 1.01)`
+              : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+            transition: mousePos.isHover ? 'transform 0.1s ease-out' : 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          }}
+          className="group relative rounded-2xl bg-gradient-to-b from-[#180e28] via-[#10081c] to-[#07040d] border border-[#a855f7]/40 p-6 sm:p-8 shadow-[0_25px_50px_rgba(0,0,0,0.95),0_0_35px_rgba(217,70,239,0.22),inset_0_0_25px_rgba(112,26,117,0.18)] select-none overflow-hidden"
+        >
+          {/* Ghost Purple Degrading Flame Rim Aura behind card */}
+          <div className="absolute -inset-1 bg-[radial-gradient(ellipse_at_top,rgba(217,70,239,0.22)_0%,rgba(112,26,117,0.06)_50%,transparent_75%)] pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity" />
 
-        {/* Cursor Spotlight Radial Glow with Ghost Purple Tone */}
-        {mousePos.isHover && (
-          <div
-            style={{
-              background: `radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, rgba(192, 132, 252, 0.12), transparent 70%)`,
-            }}
-            className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-200"
-          />
-        )}
+          {/* Cursor Spotlight Radial Glow with Vivid Ghost Purple Tone */}
+          {mousePos.isHover && (
+            <div
+              style={{
+                background: `radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, rgba(232, 121, 249, 0.16), transparent 70%)`,
+              }}
+              className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-200"
+            />
+          )}
 
-        {/* Top Tag & Title with Scrambled Kinetic Text Reveal */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#262130] relative z-20">
-          <div>
-            <span className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-[2.4px]">
-              {current.tag}
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-normal font-display text-[#e0e0e0] mt-0.5 flex items-baseline gap-2">
-              <span className="text-white font-medium drop-shadow-[0_0_12px_rgba(192,132,252,0.35)]">{scrambledTitle}</span>
-              <span className="text-sm font-sans text-[#8e889b]">
-                — {scrambledRole}
+          {/* Top Tag & Title with Scrambled Kinetic Text Reveal */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#3b0764]/60 relative z-20">
+            <div>
+              <span className="text-[10px] font-mono-nav text-[#e879f9] uppercase tracking-[2.4px] drop-shadow-[0_0_8px_rgba(232,121,249,0.5)]">
+                {current.tag}
               </span>
-            </h3>
+              <h3 className="text-2xl sm:text-3xl font-normal font-display text-[#fae8ff] mt-0.5 flex items-baseline gap-2">
+                <span className="text-white font-medium drop-shadow-[0_0_16px_rgba(232,121,249,0.5)]">{scrambledTitle}</span>
+                <span className="text-sm font-sans text-[#a89cb8]">
+                  — {scrambledRole}
+                </span>
+              </h3>
+            </div>
+
+            <button
+              onClick={() => {
+                playBeep?.(1000, 0.06)
+                onRegisterClick(current.title)
+              }}
+              className="h-[38px] px-5 rounded-[100px] bg-gradient-to-r from-[#701a75] via-[#4a044e] to-[#2e1065] hover:from-[#a21caf] hover:to-[#581c87] border border-[#e879f9]/50 hover:border-[#fae8ff] text-[#fae8ff] hover:shadow-[0_0_25px_rgba(232,121,249,0.5)] text-[12px] font-mono-nav tracking-[1.04px] flex items-center gap-2 cursor-pointer transition-all active:scale-95 shadow-md"
+            >
+              <span>REGISTER</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#fae8ff] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
           </div>
 
-          <button
-            onClick={() => {
-              playBeep?.(1000, 0.06)
-              onRegisterClick(current.title)
-            }}
-            className="h-[38px] px-5 rounded-[100px] bg-gradient-to-r from-[#1f1a2c] to-[#16141f] hover:from-[#2a223d] hover:to-[#1e192b] border border-[#7e22ce]/40 hover:border-[#c084fc] text-[#f3e8ff] hover:shadow-[0_0_20px_rgba(168,85,247,0.35)] text-[12px] font-mono-nav tracking-[1.04px] flex items-center gap-2 cursor-pointer transition-all active:scale-95 shadow-sm"
-          >
-            <span>REGISTER</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-[#c084fc] group-hover:text-white transition-colors" />
-          </button>
-        </div>
+          {/* Short Summary */}
+          <p className="mt-5 text-[#a89cb8] text-sm sm:text-base leading-[1.4] max-w-[700px] relative z-20">
+            {current.summary}
+          </p>
 
-        {/* Short Summary */}
-        <p className="mt-5 text-[#8e889b] text-sm sm:text-base leading-[1.4] max-w-[700px] relative z-20">
-          {current.summary}
-        </p>
+          {/* Dynamic Personalized Motion Visualizer (Tailored to each contest) */}
+          <div className="mt-6 relative z-20">
+            <DynamicContestVisualizer
+              current={current}
+              onPointClick={(pt) => {}}
+              playBeep={playBeep}
+            />
+          </div>
 
-        {/* Dynamic Personalized Motion Visualizer (Tailored to each contest) */}
-        <div className="mt-6 relative z-20">
-          <DynamicContestVisualizer
-            current={current}
-            onPointClick={(pt) => {}}
-            playBeep={playBeep}
-          />
-        </div>
-
-        {/* Telemetry Matrix Grid with Clear Spacing & Ghost Purple Borders */}
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-[#262130] relative z-20">
-          {current.telemetry.map((t) => (
-            <div key={t.label} className="p-3 rounded-xl bg-[#0b0912] border border-[#2a2436] hover:border-[#7e22ce]/50 transition-colors">
-              <div className="text-[10px] font-mono-nav text-[#8e889b] uppercase tracking-wider">
-                {t.label}
+          {/* Telemetry Matrix Grid with Clear Spacing & Ghost Purple Borders */}
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-[#3b0764]/60 relative z-20">
+            {current.telemetry.map((t) => (
+              <div key={t.label} className="p-3 rounded-xl bg-[#090510] border border-[#3b0764]/60 hover:border-[#c026d3] transition-colors">
+                <div className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-wider">
+                  {t.label}
+                </div>
+                <div className="text-xs sm:text-sm font-mono-nav text-[#fae8ff] mt-1 font-medium drop-shadow-[0_0_6px_rgba(232,121,249,0.4)]">
+                  {t.val}
+                </div>
               </div>
-              <div className="text-xs sm:text-sm font-mono-nav text-[#f3e8ff] mt-1 font-medium">
-                {t.val}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </GhostFlameBorder>
     </section>
   )
 }

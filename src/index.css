@@ -11,13 +11,14 @@
     --color-dormant-graphite: #433d4e;
     --color-faint-steel: #6d647a;
 
-    /* Ghost Purple Spectrum */
-    --color-ghost-lilac: #f3e8ff;
-    --color-ghost-violet: #c084fc;
-    --color-ghost-purple: #a855f7;
-    --color-ghost-deep: #7e22ce;
-    --color-ghost-phantom: #581c87;
-    --color-ghost-void: #2e1065;
+    /* High-Contrast Ghost Purple & Spectral Flame Spectrum */
+    --color-ghost-lilac: #fae8ff;
+    --color-ghost-fuchsia: #e879f9;
+    --color-ghost-violet: #d946ef;
+    --color-ghost-purple: #c026d3;
+    --color-ghost-deep: #701a75;
+    --color-ghost-phantom: #4a044e;
+    --color-ghost-void: #1f0438;
 
     --font-display: 'Cormorant Garamond', Georgia, serif;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
