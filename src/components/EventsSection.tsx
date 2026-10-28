@@ -137,8 +137,10 @@ function useScrambleText(targetText: string, triggerKey: any) {
   return displayText
 }
 
-// Living Lusion-Style Canvas Radar Component
-function LivingRadar({
+// ============================================================================
+// 1. AEROVISION VISUALIZER: 3D High-Speed Optical Drone Corridor & Flight Sim
+// ============================================================================
+function AeroVisionVisualizer({
   current,
   onPointClick,
   playBeep,
@@ -157,76 +159,186 @@ function LivingRadar({
     if (!ctx) return
 
     let animationId: number
-    let angle = 0
-    let rippleRadius = 0
+    let time = 0
 
-    const width = (canvas.width = canvas.parentElement?.clientWidth || 700)
-    const height = (canvas.height = 240)
-    const cx = width / 2
-    const cy = height / 2
+    // Stars / Speed dust particles
+    const particles: { x: number; y: number; z: number }[] = []
+    for (let i = 0; i < 45; i++) {
+      particles.push({
+        x: (Math.random() - 0.5) * 500,
+        y: (Math.random() - 0.5) * 220,
+        z: Math.random() * 400 + 20,
+      })
+    }
 
     const render = () => {
+      time += 0.03
+      const width = (canvas.width = canvas.parentElement?.clientWidth || 700)
+      const height = (canvas.height = 250)
+      const cx = width / 2
+      const cy = height / 2
+
       ctx.clearRect(0, 0, width, height)
 
-      // Background Grid
-      ctx.strokeStyle = '#1a1a1d'
+      // 1. Perspective Tunnel Wireframe
+      ctx.strokeStyle = '#18181b'
       ctx.lineWidth = 1
-      ctx.beginPath()
-      ctx.moveTo(0, cy)
-      ctx.lineTo(width, cy)
-      ctx.moveTo(cx, 0)
-      ctx.lineTo(cx, height)
-      ctx.stroke()
+      const vanishingX = cx + Math.sin(time * 0.8) * 40
+      const vanishingY = cy + Math.cos(time * 0.6) * 15
 
-      // Concentric Range Rings
-      const rings = [35, 75, 115]
-      rings.forEach((r) => {
+      // Longitudinal corridor lines
+      const corners = [
+        [0, 0],
+        [width, 0],
+        [width, height],
+        [0, height],
+        [0, cy],
+        [width, cy],
+      ]
+      corners.forEach(([x, y]) => {
         ctx.beginPath()
-        ctx.arc(cx, cy, r, 0, Math.PI * 2)
-        ctx.strokeStyle = 'rgba(37, 37, 37, 0.7)'
-        ctx.lineWidth = 1
+        ctx.moveTo(x, y)
+        ctx.lineTo(vanishingX, vanishingY)
         ctx.stroke()
       })
 
-      // Expanding Sonar Wave Ripple
-      rippleRadius = (rippleRadius + 0.6) % 130
+      // Forward rushing perspective floor grid lines
+      const gridOffset = (time * 120) % 60
+      for (let z = gridOffset; z < 400; z += 60) {
+        const factor = 120 / (z + 120)
+        const py = cy + (height - cy) * factor
+        ctx.beginPath()
+        ctx.moveTo(cx - (cx * factor), py)
+        ctx.lineTo(cx + (cx * factor), py)
+        ctx.strokeStyle = `rgba(37, 37, 37, ${Math.max(0, 0.6 * (1 - z / 400))})`
+        ctx.stroke()
+      }
+
+      // 2. Speed Dust / Streamline Particles
+      particles.forEach((p) => {
+        p.z -= 4.5
+        if (p.z <= 10) {
+          p.z = 400
+          p.x = (Math.random() - 0.5) * 500
+          p.y = (Math.random() - 0.5) * 220
+        }
+        const scale = 140 / p.z
+        const px = vanishingX + p.x * scale
+        const py = vanishingY + p.y * scale
+        const alpha = Math.min(1, Math.max(0, (400 - p.z) / 300))
+
+        ctx.fillStyle = `rgba(224, 224, 224, ${alpha * 0.6})`
+        ctx.fillRect(px, py, Math.max(1, 2.5 * scale), Math.max(1, 2.5 * scale))
+      })
+
+      // 3. Receding 3D Optical Neon Ring Gates
+      const gateCount = 4
+      for (let g = 0; g < gateCount; g++) {
+        const gateProgress = ((time * 0.35 + g * 0.25) % 1)
+        const depth = (1 - gateProgress) * 350 + 40
+        const scale = 120 / depth
+        const gx = vanishingX + Math.sin(time + g) * 30 * scale
+        const gy = vanishingY + Math.cos(time * 0.7 + g) * 20 * scale
+        const gw = 110 * scale
+        const gh = 70 * scale
+        const alpha = Math.min(1, gateProgress * 1.8)
+
+        ctx.save()
+        ctx.translate(gx, gy)
+
+        // Gate ring rounded rectangle
+        ctx.strokeStyle = g === 0 ? 'rgba(255, 255, 255, 0.85)' : `rgba(200, 200, 200, ${alpha * 0.45})`
+        ctx.lineWidth = g === 0 ? 2 : 1.2
+        ctx.strokeRect(-gw / 2, -gh / 2, gw, gh)
+
+        // Optical LED corner markers on gate
+        const cornerSize = 8 * scale
+        ctx.fillStyle = '#e0e0e0'
+        ctx.fillRect(-gw / 2, -gh / 2, cornerSize, 2)
+        ctx.fillRect(-gw / 2, -gh / 2, 2, cornerSize)
+        ctx.fillRect(gw / 2 - cornerSize, -gh / 2, cornerSize, 2)
+        ctx.fillRect(gw / 2 - 2, -gh / 2, 2, cornerSize)
+        ctx.fillRect(-gw / 2, gh / 2 - 2, cornerSize, 2)
+        ctx.fillRect(-gw / 2, gh / 2 - cornerSize, 2, cornerSize)
+        ctx.fillRect(gw / 2 - cornerSize, gh / 2 - 2, cornerSize, 2)
+        ctx.fillRect(gw / 2 - 2, gh / 2 - cornerSize, 2, cornerSize)
+
+        // Gate ID Tag in perspective
+        if (scale > 0.4) {
+          ctx.fillStyle = 'rgba(130, 139, 141, 0.7)'
+          ctx.font = '9px monospace'
+          ctx.fillText(`GATE // 0${g + 1}`, -gw / 2 + 4, -gh / 2 - 5)
+        }
+        ctx.restore()
+      }
+
+      // 4. Drone Cockpit HUD Crosshair & Attitude Horizon
+      const droneX = cx + Math.sin(time * 1.4) * 55
+      const droneY = cy + Math.cos(time * 1.1) * 28
+      const bankAngle = Math.sin(time * 1.4) * 0.2
+
+      ctx.save()
+      ctx.translate(droneX, droneY)
+      ctx.rotate(bankAngle)
+
+      // Drone Artificial Horizon Ladder
+      ctx.strokeStyle = 'rgba(224, 224, 224, 0.75)'
+      ctx.lineWidth = 1.2
+
+      // Central Reticle
       ctx.beginPath()
-      ctx.arc(cx, cy, rippleRadius, 0, Math.PI * 2)
-      ctx.strokeStyle = `rgba(224, 224, 224, ${Math.max(0, 0.35 * (1 - rippleRadius / 130))})`
-      ctx.lineWidth = 1
+      ctx.arc(0, 0, 16, 0, Math.PI * 2)
       ctx.stroke()
 
-      // Rotating Radar Beam with Phosphor Gradient Sweep
-      angle += 0.022
-      ctx.save()
-      ctx.translate(cx, cy)
-      ctx.rotate(angle)
-
-      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 150)
-      gradient.addColorStop(0, 'rgba(224, 224, 224, 0.4)')
-      gradient.addColorStop(0.3, 'rgba(224, 224, 224, 0.12)')
-      gradient.addColorStop(1, 'transparent')
-
       ctx.beginPath()
-      ctx.moveTo(0, 0)
-      ctx.arc(0, 0, 150, -Math.PI / 4, 0, false)
-      ctx.closePath()
-      ctx.fillStyle = gradient
+      ctx.arc(0, 0, 3, 0, Math.PI * 2)
+      ctx.fillStyle = '#ffffff'
       ctx.fill()
 
-      // Beam Leading Edge Line
+      // Horizontal roll bars
       ctx.beginPath()
-      ctx.moveTo(0, 0)
-      ctx.lineTo(150, 0)
-      ctx.strokeStyle = 'rgba(224, 224, 224, 0.65)'
-      ctx.lineWidth = 1.2
+      ctx.moveTo(-32, 0)
+      ctx.lineTo(-18, 0)
+      ctx.moveTo(18, 0)
+      ctx.lineTo(32, 0)
+      ctx.moveTo(0, -22)
+      ctx.lineTo(0, -14)
       ctx.stroke()
+
+      // 4 Spinning Rotors Indicator
+      const rotorRadius = 14
+      const rotorAngle = time * 25
+      const quadOffsets = [
+        [-38, -24],
+        [38, -24],
+        [-38, 24],
+        [38, 24],
+      ]
+      quadOffsets.forEach(([qx, qy]) => {
+        // Arm
+        ctx.strokeStyle = 'rgba(100, 110, 113, 0.4)'
+        ctx.lineWidth = 1
+        ctx.beginPath()
+        ctx.moveTo(0, 0)
+        ctx.lineTo(qx, qy)
+        ctx.stroke()
+
+        // Spinning rotor disc
+        ctx.save()
+        ctx.translate(qx, qy)
+        ctx.rotate(rotorAngle)
+        ctx.strokeStyle = 'rgba(224, 224, 224, 0.35)'
+        ctx.beginPath()
+        ctx.ellipse(0, 0, rotorRadius, rotorRadius / 3, 0, 0, Math.PI * 2)
+        ctx.stroke()
+        ctx.restore()
+      })
+
       ctx.restore()
 
-      // Connecting Laser Paths between Waypoints
-      ctx.strokeStyle = 'rgba(100, 110, 113, 0.3)'
-      ctx.lineWidth = 1
-      ctx.setLineDash([4, 4])
+      // Spline flight path connecting gates
+      ctx.strokeStyle = 'rgba(224, 224, 224, 0.25)'
+      ctx.setLineDash([3, 4])
       ctx.beginPath()
       current.scanPoints.forEach((pt, i) => {
         const px = pt.x * width
@@ -236,32 +348,6 @@ function LivingRadar({
       })
       ctx.stroke()
       ctx.setLineDash([])
-
-      // Draw Interactive Waypoints
-      current.scanPoints.forEach((pt) => {
-        const px = pt.x * width
-        const py = pt.y * height
-        const dx = px - cx
-        const dy = py - cy
-        const ptAngle = (Math.atan2(dy, dx) + Math.PI * 2) % (Math.PI * 2)
-        const currentAngleNorm = ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
-        const angleDiff = Math.abs(currentAngleNorm - ptAngle)
-        const isSwept = angleDiff < 0.22 || angleDiff > Math.PI * 2 - 0.22
-
-        // Pulsing node glow when swept by radar
-        if (isSwept) {
-          ctx.beginPath()
-          ctx.arc(px, py, 10, 0, Math.PI * 2)
-          ctx.strokeStyle = 'rgba(224, 224, 224, 0.5)'
-          ctx.stroke()
-        }
-
-        // Waypoint dot
-        ctx.beginPath()
-        ctx.arc(px, py, 3.5, 0, Math.PI * 2)
-        ctx.fillStyle = isSwept ? '#ffffff' : '#e0e0e0'
-        ctx.fill()
-      })
 
       animationId = requestAnimationFrame(render)
     }
@@ -281,16 +367,16 @@ function LivingRadar({
   }, [current])
 
   return (
-    <div className="relative w-full h-[240px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
+    <div className="relative w-full h-[250px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
       <canvas ref={canvasRef} className="w-full h-full block" />
 
-      {/* Interactive HTML Waypoint Overlays */}
+      {/* Interactive Waypoints */}
       {current.scanPoints.map((pt, i) => (
         <div
           key={i}
           style={{ left: `${pt.x * 100}%`, top: `${pt.y * 100}%` }}
           onClick={() => {
-            playBeep?.(1200, 0.05)
+            playBeep?.(1350, 0.05)
             setActivePt(pt.label)
             onPointClick(pt)
           }}
@@ -299,22 +385,768 @@ function LivingRadar({
           <div className="w-2.5 h-2.5 rounded-full border border-[#444444] bg-[#010101] group-hover:border-[#e0e0e0] group-hover:scale-150 transition-all flex items-center justify-center">
             <div className="w-1 h-1 bg-[#e0e0e0] rounded-full" />
           </div>
-          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/80 px-1.5 py-0.5 rounded border border-[#252525]/60">
+          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/85 px-1.5 py-0.5 rounded border border-[#252525]/80">
             {pt.label} <span className="text-[#828b8d]">[{pt.status}]</span>
           </span>
         </div>
       ))}
 
-      {/* Corner Telemetry Readouts */}
+      {/* Bespoke Telemetry Badges */}
       <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-2">
         <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0] animate-ping" />
-        <span>RADAR MATRIX // {current.radarLabel}</span>
+        <span>FLIGHT TELEMETRY // VEL: 21.4 M/S // LATENCY: 3.8 MS</span>
       </div>
-      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none">
-        LUSION KINETIC SIMULATOR
+      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-3">
+        <span>OPTICAL FLOW: <span className="text-[#e0e0e0]">LOCKED</span></span>
+        <span>CIRCUIT: <span className="text-[#e0e0e0]">03/05</span></span>
       </div>
     </div>
   )
+}
+
+// ============================================================================
+// 2. MECHA GAUNTLET VISUALIZER: Dynamic Quadruped Kinematics & Terrain Trial
+// ============================================================================
+function MechaGauntletVisualizer({
+  current,
+  onPointClick,
+  playBeep,
+}: {
+  current: ContestProtocol
+  onPointClick: (pt: { label: string; status: string }) => void
+  playBeep?: (freq?: number, duration?: number) => void
+}) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [activePt, setActivePt] = useState<string | null>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let animationId: number
+    let time = 0
+
+    const render = () => {
+      time += 0.025
+      const width = (canvas.width = canvas.parentElement?.clientWidth || 700)
+      const height = (canvas.height = 250)
+
+      ctx.clearRect(0, 0, width, height)
+
+      // Terrain profile height function
+      const getGroundY = (x: number) => {
+        const norm = x / width
+        // 0 to 0.28: Incline Ramp
+        if (norm < 0.28) {
+          return height * 0.8 - (norm / 0.28) * 45
+        }
+        // 0.28 to 0.55: Gravel Bed (jagged)
+        if (norm < 0.55) {
+          const gravelBase = height * 0.8 - 45
+          const noise = Math.sin(norm * 140) * 4 + Math.cos(norm * 220) * 2.5
+          return gravelBase + noise
+        }
+        // 0.55 to 0.78: Stair Risers
+        if (norm < 0.78) {
+          const stairStep = Math.floor((norm - 0.55) / 0.076)
+          return height * 0.8 - 45 - stairStep * 14
+        }
+        // 0.78 to 1.0: Narrow Balance Beam
+        return height * 0.8 - 90
+      }
+
+      // 1. Draw Multi-Surface Terrain Cross-Section
+      ctx.beginPath()
+      ctx.moveTo(0, height)
+      for (let x = 0; x <= width; x += 3) {
+        ctx.lineTo(x, getGroundY(x))
+      }
+      ctx.lineTo(width, height)
+      ctx.closePath()
+
+      // Terrain Fill Gradient
+      const terrainGrad = ctx.createLinearGradient(0, height * 0.4, 0, height)
+      terrainGrad.addColorStop(0, 'rgba(28, 30, 34, 0.8)')
+      terrainGrad.addColorStop(1, '#050505')
+      ctx.fillStyle = terrainGrad
+      ctx.fill()
+
+      // Terrain Surface Stroke
+      ctx.strokeStyle = '#38383e'
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      for (let x = 0; x <= width; x += 3) {
+        if (x === 0) ctx.moveTo(x, getGroundY(x))
+        else ctx.lineTo(x, getGroundY(x))
+      }
+      ctx.stroke()
+
+      // Sub-surface hatching lines
+      ctx.strokeStyle = 'rgba(37, 37, 37, 0.4)'
+      ctx.lineWidth = 1
+      for (let x = 15; x < width; x += 22) {
+        const gy = getGroundY(x)
+        ctx.beginPath()
+        ctx.moveTo(x, gy)
+        ctx.lineTo(x - 12, height)
+        ctx.stroke()
+      }
+
+      // 2. Animated Quadruped Chassis Trotting across the Terrain
+      const botProgress = (time * 0.09) % 1
+      const botX = botProgress * (width - 120) + 60
+      const botGroundY = getGroundY(botX)
+
+      // Quadruped chassis dimensions
+      const chassisW = 60
+      const chassisH = 18
+      const bodyY = botGroundY - 42 + Math.sin(time * 8) * 3
+
+      // Chassis Pitch Tilt matching terrain slope
+      const slopeDx = 25
+      const slope = (getGroundY(botX + slopeDx) - getGroundY(botX - slopeDx)) / (slopeDx * 2)
+      const pitchAngle = Math.atan(slope)
+
+      ctx.save()
+      ctx.translate(botX, bodyY)
+      ctx.rotate(pitchAngle)
+
+      // Chassis Body
+      ctx.fillStyle = '#16191b'
+      ctx.fillRect(-chassisW / 2, -chassisH / 2, chassisW, chassisH)
+      ctx.strokeStyle = '#e0e0e0'
+      ctx.lineWidth = 1.5
+      ctx.strokeRect(-chassisW / 2, -chassisH / 2, chassisW, chassisH)
+
+      // Battery / Sensor Head
+      ctx.fillStyle = '#252525'
+      ctx.fillRect(chassisW / 2 - 8, -chassisH / 2 + 2, 7, 7)
+      ctx.fillStyle = '#ffffff'
+      ctx.fillRect(chassisW / 2 - 4, -chassisH / 2 + 4, 3, 3)
+
+      // Center of Mass (CoM) marker inside body
+      ctx.beginPath()
+      ctx.arc(0, 0, 4, 0, Math.PI * 2)
+      ctx.fillStyle = '#e0e0e0'
+      ctx.fill()
+
+      ctx.restore()
+
+      // 3. Four Articulated Legs with Kinematic Trotting Gait
+      const legPairs = [
+        { offset: -22, phase: 0 },
+        { offset: -14, phase: Math.PI },
+        { offset: 14, phase: Math.PI },
+        { offset: 22, phase: 0 },
+      ]
+
+      legPairs.forEach(({ offset, phase }, idx) => {
+        const hipX = botX + offset
+        const hipY = bodyY
+
+        // Trotting foot motion
+        const cycle = time * 7 + phase
+        const footStepX = hipX + Math.sin(cycle) * 16
+        const footLift = Math.max(0, Math.cos(cycle)) * 14
+        const targetFootY = getGroundY(footStepX) - footLift
+
+        // Two-segment Inverse Kinematics Knee calculation
+        const dx = footStepX - hipX
+        const dy = targetFootY - hipY
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        const l1 = 24
+        const l2 = 24
+        const clampedDist = Math.min(dist, l1 + l2 - 2)
+
+        const angleBase = Math.atan2(dy, dx)
+        const cosKnee = (clampedDist * clampedDist - l1 * l1 - l2 * l2) / (2 * l1 * l2)
+        const kneeBend = Math.acos(Math.max(-1, Math.min(1, cosKnee)))
+        const kneeSign = idx % 2 === 0 ? 1 : -1
+
+        const kneeX = hipX + Math.cos(angleBase + kneeSign * (kneeBend / 2)) * l1
+        const kneeY = hipY + Math.sin(angleBase + kneeSign * (kneeBend / 2)) * l1
+
+        // Draw Upper Leg
+        ctx.strokeStyle = idx < 2 ? '#646e71' : '#e0e0e0'
+        ctx.lineWidth = 2
+        ctx.beginPath()
+        ctx.moveTo(hipX, hipY)
+        ctx.lineTo(kneeX, kneeY)
+        ctx.stroke()
+
+        // Draw Lower Leg / Piston
+        ctx.strokeStyle = '#e0e0e0'
+        ctx.beginPath()
+        ctx.moveTo(kneeX, kneeY)
+        ctx.lineTo(footStepX, targetFootY)
+        ctx.stroke()
+
+        // Foot Contact Paw
+        ctx.beginPath()
+        ctx.arc(footStepX, targetFootY, 2.8, 0, Math.PI * 2)
+        ctx.fillStyle = footLift < 2 ? '#ffffff' : '#828b8d'
+        ctx.fill()
+
+        // Ground Reaction Force (GRF) Vector Spike when foot is planted
+        if (footLift < 2) {
+          ctx.strokeStyle = 'rgba(224, 224, 224, 0.45)'
+          ctx.lineWidth = 1.2
+          ctx.beginPath()
+          ctx.moveTo(footStepX, targetFootY)
+          ctx.lineTo(footStepX, targetFootY + 12)
+          ctx.stroke()
+        }
+      })
+
+      // 4. IMU Balance Gyro & Center of Mass Stability Vector
+      ctx.strokeStyle = 'rgba(224, 224, 224, 0.25)'
+      ctx.lineWidth = 1
+      ctx.setLineDash([2, 3])
+      ctx.beginPath()
+      ctx.moveTo(botX, bodyY)
+      ctx.lineTo(botX, botGroundY)
+      ctx.stroke()
+      ctx.setLineDash([])
+
+      animationId = requestAnimationFrame(render)
+    }
+
+    render()
+
+    const handleResize = () => {
+      if (!canvas) return
+      canvas.width = canvas.parentElement?.clientWidth || 700
+    }
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      cancelAnimationFrame(animationId)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [current])
+
+  return (
+    <div className="relative w-full h-[250px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
+      <canvas ref={canvasRef} className="w-full h-full block" />
+
+      {/* Interactive Waypoints */}
+      {current.scanPoints.map((pt, i) => (
+        <div
+          key={i}
+          style={{ left: `${pt.x * 100}%`, top: `${pt.y * 100}%` }}
+          onClick={() => {
+            playBeep?.(1100, 0.05)
+            setActivePt(pt.label)
+            onPointClick(pt)
+          }}
+          className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 group cursor-pointer p-1"
+        >
+          <div className="w-2.5 h-2.5 rounded-full border border-[#444444] bg-[#010101] group-hover:border-[#e0e0e0] group-hover:scale-150 transition-all flex items-center justify-center">
+            <div className="w-1 h-1 bg-[#e0e0e0] rounded-full" />
+          </div>
+          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/85 px-1.5 py-0.5 rounded border border-[#252525]/80">
+            {pt.label} <span className="text-[#828b8d]">[{pt.status}]</span>
+          </span>
+        </div>
+      ))}
+
+      {/* Bespoke Telemetry Badges */}
+      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0] animate-ping" />
+        <span>IMU BALANCE // PITCH: +3.2° // ROLL: -0.4° // STABILITY: 98.6%</span>
+      </div>
+      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-3">
+        <span>GAIT: <span className="text-[#e0e0e0]">COMPLIANT TROT</span></span>
+        <span>TORQUE: <span className="text-[#e0e0e0]">24.8 Nm</span></span>
+      </div>
+    </div>
+  )
+}
+
+// ============================================================================
+// 3. NEUROBOTIX VISUALIZER: EEG Brainwave Oscilloscope & 6-DOF Robotic Reticle
+// ============================================================================
+function NeuroBotixVisualizer({
+  current,
+  onPointClick,
+  playBeep,
+}: {
+  current: ContestProtocol
+  onPointClick: (pt: { label: string; status: string }) => void
+  playBeep?: (freq?: number, duration?: number) => void
+}) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [activePt, setActivePt] = useState<string | null>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let animationId: number
+    let time = 0
+
+    const render = () => {
+      time += 0.03
+      const width = (canvas.width = canvas.parentElement?.clientWidth || 700)
+      const height = (canvas.height = 250)
+
+      ctx.clearRect(0, 0, width, height)
+
+      // Split Screen Layout: Left = EEG Oscilloscope, Right = 6-DOF Robotic Reticle
+      const splitX = width * 0.48
+
+      // Divider vertical guideline
+      ctx.strokeStyle = '#222226'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(splitX, 10)
+      ctx.lineTo(splitX, height - 10)
+      ctx.stroke()
+
+      // ----------------------------------------------------
+      // LEFT PANE: Real-time Oscillating EEG Brainwave Bands
+      // ----------------------------------------------------
+      const eegWidth = splitX - 30
+      const alphaBaseY = height * 0.32
+      const betaBaseY = height * 0.65
+
+      // Channel 1: Alpha Waves (8-12 Hz) - Smooth focus rhythms
+      ctx.strokeStyle = '#e0e0e0'
+      ctx.lineWidth = 1.4
+      ctx.beginPath()
+      for (let x = 20; x < eegWidth; x += 2) {
+        const tOffset = (x - 20) * 0.08 - time * 4
+        // Complex EEG packet synthesis
+        const yVal =
+          Math.sin(tOffset) * 14 * Math.sin(tOffset * 0.2) +
+          Math.sin(tOffset * 1.8) * 4
+        if (x === 20) ctx.moveTo(x, alphaBaseY + yVal)
+        else ctx.lineTo(x, alphaBaseY + yVal)
+      }
+      ctx.stroke()
+
+      // Alpha Channel Label
+      ctx.fillStyle = '#828b8d'
+      ctx.font = '9px monospace'
+      ctx.fillText('CH 01 // ALPHA BAND [10.2 Hz]', 20, alphaBaseY - 20)
+
+      // Channel 2: Beta Waves (13-30 Hz) - Dynamic high frequency bursts
+      ctx.strokeStyle = 'rgba(200, 200, 200, 0.7)'
+      ctx.lineWidth = 1.2
+      ctx.beginPath()
+      for (let x = 20; x < eegWidth; x += 2) {
+        const tOffset = (x - 20) * 0.16 - time * 6
+        const burstMod = Math.sin(time * 2 + x * 0.02)
+        const yVal =
+          Math.sin(tOffset * 2.5) * 8 * (burstMod > 0.3 ? 1.8 : 0.6) +
+          Math.cos(tOffset * 4) * 3
+        if (x === 20) ctx.moveTo(x, betaBaseY + yVal)
+        else ctx.lineTo(x, betaBaseY + yVal)
+      }
+      ctx.stroke()
+
+      // Beta Channel Label
+      ctx.fillStyle = '#828b8d'
+      ctx.fillText('CH 02 // BETA BAND [22.4 Hz FOCUS]', 20, betaBaseY - 18)
+
+      // Oscilloscope background horizontal calibration lines
+      ctx.strokeStyle = 'rgba(37, 37, 37, 0.4)'
+      ctx.lineWidth = 0.8
+      ;[alphaBaseY - 12, alphaBaseY + 12, betaBaseY - 12, betaBaseY + 12].forEach((ly) => {
+        ctx.beginPath()
+        ctx.moveTo(20, ly)
+        ctx.lineTo(eegWidth, ly)
+        ctx.stroke()
+      })
+
+      // FFT Frequency Spectrum Bars at bottom of left pane
+      const barCount = 14
+      for (let b = 0; b < barCount; b++) {
+        const barH = 5 + Math.abs(Math.sin(time * 3 + b * 0.7)) * 20
+        const bx = 20 + b * 8
+        const by = height - 25
+        ctx.fillStyle = b === 4 || b === 5 ? '#e0e0e0' : 'rgba(100, 110, 113, 0.5)'
+        ctx.fillRect(bx, by - barH, 5, barH)
+      }
+
+      // ----------------------------------------------------
+      // RIGHT PANE: 6-DOF Robotic Arm Inverse Kinematics HUD
+      // ----------------------------------------------------
+      const armBaseX = splitX + 45
+      const armBaseY = height * 0.82
+
+      // Gripper target position (driven by simulated neural focus)
+      const targetX = splitX + (width - splitX) * 0.65 + Math.sin(time * 1.5) * 25
+      const targetY = height * 0.45 + Math.cos(time * 1.2) * 20
+
+      // Arm Link 1 & Link 2 calculations
+      const armL1 = 65
+      const armL2 = 60
+      const armDx = targetX - armBaseX
+      const armDy = targetY - armBaseY
+      const armDist = Math.sqrt(armDx * armDx + armDy * armDy)
+      const clampedArmDist = Math.min(armDist, armL1 + armL2 - 4)
+
+      const armBaseAngle = Math.atan2(armDy, armDx)
+      const cosElbow = (clampedArmDist * clampedArmDist - armL1 * armL1 - armL2 * armL2) / (2 * armL1 * armL2)
+      const elbowAngle = Math.acos(Math.max(-1, Math.min(1, cosElbow)))
+
+      const elbowX = armBaseX + Math.cos(armBaseAngle - elbowAngle / 2) * armL1
+      const elbowY = armBaseY + Math.sin(armBaseAngle - elbowAngle / 2) * armL1
+
+      // Draw Robotic Arm Segments
+      // Base Mount
+      ctx.fillStyle = '#222226'
+      ctx.beginPath()
+      ctx.arc(armBaseX, armBaseY, 10, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = '#e0e0e0'
+      ctx.stroke()
+
+      // Link 1
+      ctx.strokeStyle = '#e0e0e0'
+      ctx.lineWidth = 3
+      ctx.beginPath()
+      ctx.moveTo(armBaseX, armBaseY)
+      ctx.lineTo(elbowX, elbowY)
+      ctx.stroke()
+
+      // Elbow Joint
+      ctx.beginPath()
+      ctx.arc(elbowX, elbowY, 5, 0, Math.PI * 2)
+      ctx.fillStyle = '#ffffff'
+      ctx.fill()
+
+      // Link 2
+      ctx.strokeStyle = '#c0c0c0'
+      ctx.lineWidth = 2.2
+      ctx.beginPath()
+      ctx.moveTo(elbowX, elbowY)
+      ctx.lineTo(targetX, targetY)
+      ctx.stroke()
+
+      // 6-DOF End-Effector Gripper Reticle
+      ctx.save()
+      ctx.translate(targetX, targetY)
+
+      // Laser Targeting Reticle
+      ctx.strokeStyle = 'rgba(224, 224, 224, 0.85)'
+      ctx.lineWidth = 1.2
+      ctx.beginPath()
+      ctx.arc(0, 0, 16, 0, Math.PI * 2)
+      ctx.stroke()
+
+      // Precision Crosshairs
+      ctx.beginPath()
+      ctx.moveTo(-22, 0)
+      ctx.lineTo(-12, 0)
+      ctx.moveTo(12, 0)
+      ctx.lineTo(22, 0)
+      ctx.moveTo(0, -22)
+      ctx.lineTo(0, -12)
+      ctx.moveTo(0, 12)
+      ctx.lineTo(0, 22)
+      ctx.stroke()
+
+      // Gripper Pincers
+      const gripAngle = 0.2 + Math.abs(Math.sin(time * 3)) * 0.2
+      ctx.beginPath()
+      ctx.moveTo(0, 0)
+      ctx.lineTo(Math.cos(gripAngle) * 12, Math.sin(gripAngle) * 12)
+      ctx.moveTo(0, 0)
+      ctx.lineTo(Math.cos(-gripAngle) * 12, Math.sin(-gripAngle) * 12)
+      ctx.stroke()
+
+      ctx.restore()
+
+      animationId = requestAnimationFrame(render)
+    }
+
+    render()
+
+    const handleResize = () => {
+      if (!canvas) return
+      canvas.width = canvas.parentElement?.clientWidth || 700
+    }
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      cancelAnimationFrame(animationId)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [current])
+
+  return (
+    <div className="relative w-full h-[250px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
+      <canvas ref={canvasRef} className="w-full h-full block" />
+
+      {/* Interactive Waypoints */}
+      {current.scanPoints.map((pt, i) => (
+        <div
+          key={i}
+          style={{ left: `${pt.x * 100}%`, top: `${pt.y * 100}%` }}
+          onClick={() => {
+            playBeep?.(1250, 0.05)
+            setActivePt(pt.label)
+            onPointClick(pt)
+          }}
+          className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 group cursor-pointer p-1"
+        >
+          <div className="w-2.5 h-2.5 rounded-full border border-[#444444] bg-[#010101] group-hover:border-[#e0e0e0] group-hover:scale-150 transition-all flex items-center justify-center">
+            <div className="w-1 h-1 bg-[#e0e0e0] rounded-full" />
+          </div>
+          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/85 px-1.5 py-0.5 rounded border border-[#252525]/80">
+            {pt.label} <span className="text-[#828b8d]">[{pt.status}]</span>
+          </span>
+        </div>
+      ))}
+
+      {/* Bespoke Telemetry Badges */}
+      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0] animate-ping" />
+        <span>NEURAL COHERENCE: 95.4% // OPENBCI 8-CH // LATENCY: 11 MS</span>
+      </div>
+      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-3">
+        <span>ARM DOF: <span className="text-[#e0e0e0]">6 AXIS</span></span>
+        <span>SERVO SYNC: <span className="text-[#e0e0e0]">OPTIMAL</span></span>
+      </div>
+    </div>
+  )
+}
+
+// ============================================================================
+// 4. CYBER SALVAGE VISUALIZER: Subterranean LiDAR SLAM & Thermal Heatmap
+// ============================================================================
+function CyberSalvageVisualizer({
+  current,
+  onPointClick,
+  playBeep,
+}: {
+  current: ContestProtocol
+  onPointClick: (pt: { label: string; status: string }) => void
+  playBeep?: (freq?: number, duration?: number) => void
+}) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [activePt, setActivePt] = useState<string | null>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let animationId: number
+    let sweepAngle = 0
+    let time = 0
+
+    // Maze obstacle line segments [x1, y1, x2, y2] relative to canvas
+    const getMazeWalls = (w: number, h: number) => [
+      [w * 0.15, h * 0.2, w * 0.4, h * 0.2],
+      [w * 0.4, h * 0.2, w * 0.4, h * 0.5],
+      [w * 0.25, h * 0.5, w * 0.55, h * 0.5],
+      [w * 0.55, h * 0.3, w * 0.85, h * 0.3],
+      [w * 0.65, h * 0.5, w * 0.65, h * 0.82],
+      [w * 0.35, h * 0.7, w * 0.8, h * 0.7],
+      [w * 0.18, h * 0.65, w * 0.18, h * 0.85],
+    ]
+
+    const render = () => {
+      time += 0.02
+      sweepAngle += 0.035
+
+      const width = (canvas.width = canvas.parentElement?.clientWidth || 700)
+      const height = (canvas.height = 250)
+      const walls = getMazeWalls(width, height)
+
+      ctx.clearRect(0, 0, width, height)
+
+      // SLAM Rover Position moving slowly along corridor
+      const roverX = width * 0.38 + Math.sin(time * 0.4) * (width * 0.18)
+      const roverY = height * 0.42 + Math.cos(time * 0.3) * (height * 0.12)
+
+      // 1. Draw Occupancy Grid Laser Dot Field (LiDAR Point Cloud)
+      ctx.strokeStyle = '#222226'
+      ctx.lineWidth = 1.2
+      walls.forEach(([x1, y1, x2, y2]) => {
+        ctx.beginPath()
+        ctx.moveTo(x1, y1)
+        ctx.lineTo(x2, y2)
+        ctx.stroke()
+      })
+
+      // 2. 360° LiDAR Ray-Cast Beam Sweep
+      const rayCount = 80
+      for (let r = 0; r < rayCount; r++) {
+        const offset = (r / rayCount) * (Math.PI / 3)
+        const angle = sweepAngle - offset
+        const maxDist = 180
+        const rayEndX = roverX + Math.cos(angle) * maxDist
+        const rayEndY = roverY + Math.sin(angle) * maxDist
+
+        const alpha = Math.max(0, 0.4 * (1 - r / rayCount))
+        ctx.strokeStyle = `rgba(224, 224, 224, ${alpha})`
+        ctx.lineWidth = 0.8
+        ctx.beginPath()
+        ctx.moveTo(roverX, roverY)
+        ctx.lineTo(rayEndX, rayEndY)
+        ctx.stroke()
+
+        // Point cloud contact reflection dots
+        if (r % 3 === 0) {
+          const hitDist = maxDist * (0.6 + Math.sin(angle * 5) * 0.3)
+          const hx = roverX + Math.cos(angle) * hitDist
+          const hy = roverY + Math.sin(angle) * hitDist
+          ctx.beginPath()
+          ctx.arc(hx, hy, 1.5, 0, Math.PI * 2)
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 1.5})`
+          ctx.fill()
+        }
+      }
+
+      // 3. FLIR Thermal Casualty Heat Beacon (Pulsing IR signature)
+      const thermalX = width * 0.72
+      const thermalY = height * 0.35
+      const pulseSize = 25 + Math.sin(time * 4) * 8
+
+      const thermalGrad = ctx.createRadialGradient(
+        thermalX,
+        thermalY,
+        2,
+        thermalX,
+        thermalY,
+        pulseSize
+      )
+      thermalGrad.addColorStop(0, 'rgba(255, 255, 255, 0.8)')
+      thermalGrad.addColorStop(0.3, 'rgba(180, 180, 180, 0.35)')
+      thermalGrad.addColorStop(1, 'transparent')
+
+      ctx.fillStyle = thermalGrad
+      ctx.beginPath()
+      ctx.arc(thermalX, thermalY, pulseSize, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Thermal contour circle
+      ctx.strokeStyle = 'rgba(224, 224, 224, 0.5)'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.arc(thermalX, thermalY, pulseSize, 0, Math.PI * 2)
+      ctx.stroke()
+
+      // Thermal readout tag
+      ctx.fillStyle = '#e0e0e0'
+      ctx.font = '9px monospace'
+      ctx.fillText('37.2°C // LIFE DETECTED', thermalX + 16, thermalY - 5)
+
+      // 4. Rover Chassis Icon & Breadcrumb Path
+      ctx.save()
+      ctx.translate(roverX, roverY)
+
+      // Rover Body
+      ctx.fillStyle = '#16191b'
+      ctx.fillRect(-12, -8, 24, 16)
+      ctx.strokeStyle = '#e0e0e0'
+      ctx.lineWidth = 1.2
+      ctx.strokeRect(-12, -8, 24, 16)
+
+      // Rotating LiDAR sensor dome
+      ctx.beginPath()
+      ctx.arc(0, 0, 4, 0, Math.PI * 2)
+      ctx.fillStyle = '#ffffff'
+      ctx.fill()
+
+      // Heading direction pointer
+      ctx.rotate(sweepAngle * 0.2)
+      ctx.strokeStyle = '#e0e0e0'
+      ctx.beginPath()
+      ctx.moveTo(0, 0)
+      ctx.lineTo(16, 0)
+      ctx.stroke()
+
+      ctx.restore()
+
+      animationId = requestAnimationFrame(render)
+    }
+
+    render()
+
+    const handleResize = () => {
+      if (!canvas) return
+      canvas.width = canvas.parentElement?.clientWidth || 700
+    }
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      cancelAnimationFrame(animationId)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [current])
+
+  return (
+    <div className="relative w-full h-[250px] rounded-xl bg-[#010101] border border-[#252525] overflow-hidden select-none">
+      <canvas ref={canvasRef} className="w-full h-full block" />
+
+      {/* Interactive Waypoints */}
+      {current.scanPoints.map((pt, i) => (
+        <div
+          key={i}
+          style={{ left: `${pt.x * 100}%`, top: `${pt.y * 100}%` }}
+          onClick={() => {
+            playBeep?.(1050, 0.05)
+            setActivePt(pt.label)
+            onPointClick(pt)
+          }}
+          className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 group cursor-pointer p-1"
+        >
+          <div className="w-2.5 h-2.5 rounded-full border border-[#444444] bg-[#010101] group-hover:border-[#e0e0e0] group-hover:scale-150 transition-all flex items-center justify-center">
+            <div className="w-1 h-1 bg-[#e0e0e0] rounded-full" />
+          </div>
+          <span className="text-[10px] font-mono-nav text-[#646e71] group-hover:text-[#e0e0e0] transition-colors whitespace-nowrap bg-[#010101]/85 px-1.5 py-0.5 rounded border border-[#252525]/80">
+            {pt.label} <span className="text-[#828b8d]">[{pt.status}]</span>
+          </span>
+        </div>
+      ))}
+
+      {/* Bespoke Telemetry Badges */}
+      <div className="absolute bottom-3 left-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0] animate-ping" />
+        <span>LIDAR OCCUPANCY GRID // MAP CONFIDENCE: 92.4% // 2D SLAM</span>
+      </div>
+      <div className="absolute top-3 right-4 text-[10px] font-mono-nav text-[#646e71] pointer-events-none flex items-center gap-3">
+        <span>THERMAL: <span className="text-[#e0e0e0]">37.2°C DETECTED</span></span>
+        <span>VISIBILITY: <span className="text-[#e0e0e0]">ZERO (SMOKE)</span></span>
+      </div>
+    </div>
+  )
+}
+
+// ============================================================================
+// MAIN DYNAMIC CONTEST VISUALIZER SELECTOR
+// ============================================================================
+function DynamicContestVisualizer({
+  current,
+  onPointClick,
+  playBeep,
+}: {
+  current: ContestProtocol
+  onPointClick: (pt: { label: string; status: string }) => void
+  playBeep?: (freq?: number, duration?: number) => void
+}) {
+  switch (current.id) {
+    case 'aerovision':
+      return <AeroVisionVisualizer current={current} onPointClick={onPointClick} playBeep={playBeep} />
+    case 'mechagauntlet':
+      return <MechaGauntletVisualizer current={current} onPointClick={onPointClick} playBeep={playBeep} />
+    case 'neurobotix':
+      return <NeuroBotixVisualizer current={current} onPointClick={onPointClick} playBeep={playBeep} />
+    case 'cyberneticsalvage':
+      return <CyberSalvageVisualizer current={current} onPointClick={onPointClick} playBeep={playBeep} />
+    default:
+      return <AeroVisionVisualizer current={current} onPointClick={onPointClick} playBeep={playBeep} />
+  }
 }
 
 export default function EventsSection({
@@ -455,11 +1287,11 @@ export default function EventsSection({
           {current.summary}
         </p>
 
-        {/* Living Sonar Radar Sweep */}
+        {/* Dynamic Personalized Motion Visualizer (Tailored to each contest) */}
         <div className="mt-6">
-          <LivingRadar
+          <DynamicContestVisualizer
             current={current}
-            onPointClick={() => {}}
+            onPointClick={(pt) => {}}
             playBeep={playBeep}
           />
         </div>
