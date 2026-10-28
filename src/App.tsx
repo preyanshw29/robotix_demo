@@ -62,8 +62,20 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#010101] text-[#e0e0e0] flex flex-col relative selection:bg-[#1f1f23] selection:text-[#e0e0e0]">
+    <div className="min-h-screen bg-[#010101] text-[#e0e0e0] flex flex-col relative selection:bg-[#7e22ce]/30 selection:text-[#f3e8ff] overflow-x-hidden">
       
+      {/* Ghost Purple Degrading Ambient Plasma Flames (Subtle Background Luminescence) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Top-center ethereal flame aura */}
+        <div className="absolute -top-[20%] left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.12)_0%,rgba(88,28,135,0.06)_45%,transparent_75%)] ghost-flame-aura" />
+        
+        {/* Middle-left phantom flame wisp */}
+        <div className="absolute top-[40%] -left-[15%] w-[650px] h-[650px] bg-[radial-gradient(circle,rgba(147,51,234,0.08)_0%,rgba(59,7,100,0.03)_50%,transparent_75%)] blur-3xl pointer-events-none" />
+
+        {/* Middle-right degrading purple flame wisp */}
+        <div className="absolute top-[65%] -right-[15%] w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(126,34,206,0.08)_0%,rgba(30,10,50,0.03)_50%,transparent_75%)] blur-3xl pointer-events-none" />
+      </div>
+
       {/* 76px Persistent Public Header */}
       <Header
         onRegisterClick={() => handleOpenRegister()}
@@ -73,7 +85,7 @@ export default function App() {
       />
 
       {/* Main Single Column Narrative */}
-      <main className="flex-1 flex flex-col items-center w-full">
+      <main className="flex-1 flex flex-col items-center w-full relative z-10">
         <Hero
           onRegisterClick={() => handleOpenRegister()}
           playBeep={playBeep}
@@ -97,9 +109,9 @@ export default function App() {
       {/* Closing Utility Footer */}
       <Footer playBeep={playBeep} />
 
-      {/* Floating Section Navigation (AWE Component: centered row of #1f1f23 pills) */}
+      {/* Floating Section Navigation (AWE Component: centered row of #1f1f23 pills with ghost-purple rim) */}
       {showFloatingNav && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-2 p-1 rounded-[100px] bg-[#010101]/90 backdrop-blur-md border border-[#252525] shadow-2xl">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-2 p-1 rounded-[100px] bg-[#0d0c12]/90 backdrop-blur-md border border-[#7e22ce]/30 shadow-[0_10px_35px_rgba(0,0,0,0.9),0_0_20px_rgba(168,85,247,0.15)]">
           {[
             { id: 'about', label: 'ABOUT', count: '01' },
             { id: 'contests', label: 'CONTESTS', count: '04' },
@@ -108,15 +120,15 @@ export default function App() {
             <button
               key={pill.id}
               onClick={() => scrollToSection(pill.id)}
-              className="h-[32px] px-3.5 rounded-[100px] bg-[#1f1f23] hover:bg-[#28282e] text-[12px] font-mono-nav tracking-[1.04px] text-[#e0e0e0] flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="h-[32px] px-3.5 rounded-[100px] bg-[#16141f] hover:bg-[#231e30] text-[12px] font-mono-nav tracking-[1.04px] text-[#e0e0e0] hover:text-[#f3e8ff] flex items-center gap-1.5 transition-all cursor-pointer border border-[#2a2438] hover:border-[#a855f7]/40"
             >
               <span>{pill.label}</span>
-              <span className="text-[#646e71] text-[10px]">({pill.count})</span>
+              <span className="text-[#a855f7] text-[10px]">({pill.count})</span>
             </button>
           ))}
           <button
             onClick={() => handleOpenRegister()}
-            className="h-[32px] px-4 rounded-[100px] bg-[#e0e0e0] hover:bg-white text-[#010101] text-[12px] font-mono-nav font-medium tracking-[1.04px] transition-colors cursor-pointer ml-1"
+            className="h-[32px] px-4 rounded-[100px] bg-gradient-to-r from-[#c084fc] to-[#a855f7] hover:from-[#d8b4fe] hover:to-[#c084fc] text-[#010101] text-[12px] font-mono-nav font-medium tracking-[1.04px] transition-all cursor-pointer ml-1 shadow-[0_0_15px_rgba(168,85,247,0.4)]"
           >
             CLAIM PASS
           </button>

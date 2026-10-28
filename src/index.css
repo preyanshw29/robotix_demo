@@ -3,13 +3,21 @@
 @layer base {
   :root {
     --color-void: #010101;
-    --color-charcoal-control: #1f1f23;
+    --color-charcoal-control: #1a1523;
     --color-porcelain: #e0e0e0;
-    --color-machine-well: #16191b;
-    --color-hairline-ash: #252525;
-    --color-muted-steel: #828b8d;
-    --color-dormant-graphite: #444444;
-    --color-faint-steel: #646e71;
+    --color-machine-well: #13111a;
+    --color-hairline-ash: #262130;
+    --color-muted-steel: #8e889b;
+    --color-dormant-graphite: #433d4e;
+    --color-faint-steel: #6d647a;
+
+    /* Ghost Purple Spectrum */
+    --color-ghost-lilac: #f3e8ff;
+    --color-ghost-violet: #c084fc;
+    --color-ghost-purple: #a855f7;
+    --color-ghost-deep: #7e22ce;
+    --color-ghost-phantom: #581c87;
+    --color-ghost-void: #2e1065;
 
     --font-display: 'Cormorant Garamond', Georgia, serif;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -30,7 +38,6 @@
 
 .font-mono-nav {
   font-family: var(--font-mono);
-  font-weight: 300;
   letter-spacing: 1.04px;
 }
 
@@ -39,7 +46,68 @@
   letter-spacing: 2.4px;
 }
 
-/* Custom minimal scrollbar */
+/* Ghost Purple Degrading Flame Aura & Border Glows */
+@keyframes ghostFlamePulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(1);
+    filter: blur(24px);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.04);
+    filter: blur(32px);
+  }
+}
+
+@keyframes ghostBorderDegrade {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.ghost-flame-aura {
+  animation: ghostFlamePulse 6s ease-in-out infinite;
+}
+
+.ghost-degrading-border {
+  position: relative;
+}
+
+.ghost-degrading-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(192, 132, 252, 0.45) 0%,
+    rgba(168, 85, 247, 0.2) 25%,
+    rgba(88, 28, 135, 0.1) 60%,
+    rgba(37, 37, 37, 0.3) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.ghost-flame-card-hover:hover {
+  box-shadow: 
+    0 10px 30px -5px rgba(0, 0, 0, 0.9),
+    0 0 25px 2px rgba(168, 85, 247, 0.2),
+    inset 0 0 20px rgba(126, 34, 206, 0.15);
+  border-color: rgba(192, 132, 252, 0.45);
+}
+
+/* Custom minimal scrollbar with ghost purple thumb hover */
 ::-webkit-scrollbar {
   width: 5px;
 }
@@ -47,9 +115,9 @@
   background: #010101;
 }
 ::-webkit-scrollbar-thumb {
-  background: #252525;
+  background: #262130;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #444444;
+  background: #7e22ce;
 }

@@ -31,34 +31,37 @@ export default function AboutSection() {
         </div>
       </div>
 
-      {/* 4 True Squares with Springy Bulge-out Animation */}
+      {/* 4 True Squares with Springy Bulge-out Animation & Ghost Purple Degrading Flame Aura */}
       <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
         {metrics.map((m) => (
           <div
             key={m.label}
-            className="group relative aspect-[4/3] sm:aspect-square rounded-2xl bg-[#16191b] border border-[#252525] p-5 sm:p-6 flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.08] hover:-translate-y-2 hover:border-[#646e71] hover:shadow-[0_20px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(255,255,255,0.06)] hover:z-20 cursor-default select-none"
+            className="group relative aspect-[4/3] sm:aspect-square rounded-2xl bg-[#13111a] border border-[#2a2436] p-5 sm:p-6 flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.08] hover:-translate-y-2 hover:border-[#a855f7]/60 hover:shadow-[0_20px_40px_rgba(0,0,0,0.9),0_0_25px_rgba(168,85,247,0.22),inset_0_0_15px_rgba(126,34,206,0.15)] hover:z-20 cursor-default select-none overflow-hidden"
           >
+            {/* Ethereal degrading flame glow behind card on hover */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(168,85,247,0.15)_0%,rgba(88,28,135,0.05)_50%,transparent_80%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
             {/* Top Row: Spec & Status Indicator */}
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono-nav text-[#646e71] uppercase tracking-[2.4px] group-hover:text-[#e0e0e0] transition-colors">
+            <div className="flex items-center justify-between relative z-10">
+              <span className="text-[10px] font-mono-nav text-[#8e889b] uppercase tracking-[2.4px] group-hover:text-[#f3e8ff] transition-colors">
                 {m.spec}
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#252525] group-hover:bg-[#e0e0e0] group-hover:scale-125 transition-all" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3b2d4f] group-hover:bg-[#c084fc] group-hover:shadow-[0_0_8px_#c084fc] group-hover:scale-125 transition-all" />
             </div>
 
             {/* Center: Monumental Stat Metric */}
-            <div className="my-auto text-center">
-              <span className="font-display text-4xl sm:text-5xl font-medium text-[#e0e0e0] group-hover:text-white tracking-tight transition-all duration-200 inline-block group-hover:scale-105">
+            <div className="my-auto text-center relative z-10">
+              <span className="font-display text-4xl sm:text-5xl font-medium text-[#e0e0e0] group-hover:text-white tracking-tight transition-all duration-200 inline-block group-hover:scale-105 group-hover:drop-shadow-[0_0_12px_rgba(192,132,252,0.4)]">
                 {m.value}
               </span>
             </div>
 
             {/* Bottom Row: Label & Subtext */}
-            <div className="pt-3 border-t border-[#252525] group-hover:border-[#38383c] transition-colors">
-              <div className="text-[11px] font-mono-nav text-[#e0e0e0] font-normal tracking-[1.04px]">
+            <div className="pt-3 border-t border-[#262130] group-hover:border-[#7e22ce]/40 transition-colors relative z-10">
+              <div className="text-[11px] font-mono-nav text-[#e0e0e0] font-normal tracking-[1.04px] group-hover:text-[#f3e8ff] transition-colors">
                 {m.label}
               </div>
-              <div className="text-[11px] text-[#828b8d] mt-0.5 leading-snug">
+              <div className="text-[11px] text-[#8e889b] mt-0.5 leading-snug">
                 {m.sub}
               </div>
             </div>

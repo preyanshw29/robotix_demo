@@ -18,22 +18,22 @@ export default function Hero({ onRegisterClick, playBeep }: HeroProps) {
   return (
     <section className="relative w-full pt-16 md:pt-24 pb-8 flex flex-col items-center">
       
-      {/* Editorial Monumental Headline (Office Times Round / Cormorant Garamond 100px, -3px tracking) */}
-      <h1 className="font-display text-center text-[#e0e0e0] text-6xl sm:text-8xl md:text-[100px] leading-[1.0] select-none uppercase px-4">
+      {/* Editorial Monumental Headline with Ghost Purple Spectral Glow */}
+      <h1 className="font-display text-center text-[#f3e8ff] text-6xl sm:text-8xl md:text-[100px] leading-[1.0] select-none uppercase px-4 drop-shadow-[0_0_40px_rgba(168,85,247,0.3)]">
         Robofest
       </h1>
 
       {/* Narrow Centered Supporting Paragraph in Muted Steel */}
-      <p className="mt-4 text-center text-[#828b8d] text-base sm:text-lg max-w-[540px] leading-[1.4] font-normal px-4">
+      <p className="mt-4 text-center text-[#8e889b] text-base sm:text-lg max-w-[540px] leading-[1.4] font-normal px-4">
         Autonomous systems observatory, kinetic trials, and robotics exhibition presented by ROBOTiX Club at NIT Raipur.
       </p>
 
-      {/* Action Controls: Charcoal Navigation Pill & Underlined Text Control */}
+      {/* Action Controls: Ghost Purple Charcoal Pill & Glowing Pass Link */}
       <div className="mt-8 flex items-center justify-center gap-4 px-4">
         <a
           href="#contests"
           onClick={() => playBeep?.(850, 0.05)}
-          className="h-[38px] px-6 rounded-[100px] bg-[#1f1f23] hover:bg-[#28282e] text-[#e0e0e0] text-[13px] font-mono-nav tracking-[1.04px] flex items-center justify-center cursor-pointer transition-colors"
+          className="h-[38px] px-6 rounded-[100px] bg-[#16141f] hover:bg-[#231e30] border border-[#7e22ce]/40 hover:border-[#c084fc] hover:shadow-[0_0_20px_rgba(168,85,247,0.25)] text-[#e0e0e0] hover:text-[#f3e8ff] text-[13px] font-mono-nav tracking-[1.04px] flex items-center justify-center cursor-pointer transition-all"
         >
           VIEW CONTESTS
         </a>
@@ -43,15 +43,18 @@ export default function Hero({ onRegisterClick, playBeep }: HeroProps) {
             playBeep?.(950, 0.05)
             onRegisterClick()
           }}
-          className="h-[38px] px-2 text-[#e0e0e0] hover:text-white text-[13px] font-mono-nav tracking-[1.04px] border-b border-[#e0e0e0] transition-colors cursor-pointer bg-transparent"
+          className="h-[38px] px-2 text-[#c084fc] hover:text-[#e9d5ff] text-[13px] font-mono-nav tracking-[1.04px] border-b border-[#a855f7]/60 hover:border-[#c084fc] transition-all cursor-pointer bg-transparent"
         >
           DELEGATE PASS →
         </button>
       </div>
 
       {/* Full-Breadth Panoramic 3D Viewport: Extends completely from left to right covering the entire window */}
-      <div className="mt-12 w-full overflow-hidden">
-        <div className="relative w-full h-[520px] sm:h-[600px] md:h-[680px] lg:h-[740px] bg-[#010101] border-y border-[#252525] select-none">
+      <div className="mt-12 w-full overflow-hidden relative">
+        {/* Subtle Ghost Purple Degrading Flame Aura behind the 3D gallery */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-[350px] bg-[radial-gradient(ellipse,rgba(168,85,247,0.12)_0%,rgba(88,28,135,0.04)_50%,transparent_75%)] blur-2xl pointer-events-none" />
+
+        <div className="relative w-full h-[520px] sm:h-[600px] md:h-[680px] lg:h-[740px] bg-[#010101] border-y border-[#7e22ce]/25 select-none">
           
           {/* Active 3D Visualizer */}
           {activeVisual === 'orbit' ? (
@@ -68,24 +71,24 @@ export default function Hero({ onRegisterClick, playBeep }: HeroProps) {
           {/* Top Left Instrument Label */}
           <div className="absolute top-6 left-6 sm:left-12 z-10 flex flex-col gap-1 pointer-events-none">
             <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#e0e0e0]" />
-              <span className="text-[11px] font-mono-nav text-[#e0e0e0]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#c084fc] shadow-[0_0_8px_#c084fc]" />
+              <span className="text-[11px] font-mono-nav text-[#f3e8ff]">
                 {activeVisual === 'orbit' ? 'PANORAMIC ORBIT // FULL BREADTH' : 'AUTONOMOUS CORE // SYS_REV.04'}
               </span>
             </div>
-            <span className="text-[10px] font-mono-nav text-[#646e71]">
+            <span className="text-[10px] font-mono-nav text-[#8e889b]">
               CLICK ANY REVOLVING CARD TO OPEN EVENT & REGISTRATION
             </span>
           </div>
 
           {/* Top Right Coordinate Tag */}
-          <div className="hidden sm:block absolute top-6 right-6 sm:right-12 z-10 text-[10px] font-mono-nav text-[#646e71] pointer-events-none text-right">
+          <div className="hidden sm:block absolute top-6 right-6 sm:right-12 z-10 text-[10px] font-mono-nav text-[#8e889b] pointer-events-none text-right">
             <span>OBSERVATORY BREADTH: 100VW</span>
-            <span className="block mt-0.5 text-[#444444]">COORDINATES: [21.2497° N, 81.6050° E]</span>
+            <span className="block mt-0.5 text-[#581c87]">COORDINATES: [21.2497° N, 81.6050° E]</span>
           </div>
 
           {/* Bottom Center Switcher Pills */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 bg-[#010101]/90 px-2 py-1.5 rounded-[100px] border border-[#252525]">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 bg-[#0d0c12]/90 backdrop-blur-md px-2 py-1.5 rounded-[100px] border border-[#7e22ce]/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
             <button
               onClick={() => {
                 playBeep?.(800, 0.04)
@@ -93,8 +96,8 @@ export default function Hero({ onRegisterClick, playBeep }: HeroProps) {
               }}
               className={`px-3 py-1 rounded-[100px] text-[11px] font-mono-nav tracking-[1.04px] transition-colors cursor-pointer ${
                 activeVisual === 'orbit'
-                  ? 'bg-[#1f1f23] text-[#e0e0e0] border border-[#252525]'
-                  : 'text-[#646e71] hover:text-[#e0e0e0]'
+                  ? 'bg-[#1f1a2c] text-[#f3e8ff] border border-[#a855f7]/40 shadow-[0_0_10px_rgba(168,85,247,0.2)]'
+                  : 'text-[#8e889b] hover:text-[#f3e8ff]'
               }`}
             >
               ORBIT GALLERY

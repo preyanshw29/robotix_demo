@@ -1219,11 +1219,11 @@ export default function EventsSection({
                 }}
                 className={`group relative h-[36px] px-4 rounded-[100px] text-[12px] font-mono-nav tracking-[1.04px] transition-all duration-300 cursor-pointer flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-[#1f1f23] text-[#e0e0e0] border border-[#646e71] shadow-[0_0_15px_rgba(255,255,255,0.06)]'
-                    : 'bg-transparent text-[#646e71] hover:text-[#e0e0e0] hover:bg-[#1f1f23]/50 border border-transparent'
+                    ? 'bg-[#1e172e] text-[#f3e8ff] border border-[#a855f7] shadow-[0_0_18px_rgba(168,85,247,0.35)]'
+                    : 'bg-transparent text-[#8e889b] hover:text-[#f3e8ff] hover:bg-[#16141f] border border-transparent'
                 }`}
               >
-                <span className={isActive ? 'text-[#e0e0e0]' : 'text-[#444444] group-hover:text-[#828b8d]'}>
+                <span className={isActive ? 'text-[#c084fc]' : 'text-[#4e455c] group-hover:text-[#a855f7]'}>
                   0{idx + 1}
                 </span>
                 <span>{item.title}</span>
@@ -1233,7 +1233,7 @@ export default function EventsSection({
         </div>
       </div>
 
-      {/* Lusion-Style Interactive 3D Tilt Card with Reactive Cursor Spotlight */}
+      {/* Lusion-Style Interactive 3D Tilt Card with Reactive Ghost Purple Cursor Spotlight & Degrading Flame Aura */}
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
@@ -1244,27 +1244,30 @@ export default function EventsSection({
             : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
           transition: mousePos.isHover ? 'transform 0.1s ease-out' : 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
-        className="group mt-8 relative rounded-2xl bg-[#16191b] border border-[#252525] p-6 sm:p-8 shadow-2xl select-none overflow-hidden"
+        className="group mt-8 relative rounded-2xl bg-[#13111a] border border-[#7e22ce]/35 p-6 sm:p-8 shadow-[0_25px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(168,85,247,0.14),inset_0_0_25px_rgba(88,28,135,0.1)] select-none overflow-hidden"
       >
-        {/* Cursor Spotlight Radial Glow */}
+        {/* Ghost Purple Degrading Flame Rim Aura behind card */}
+        <div className="absolute -inset-1 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.15)_0%,rgba(88,28,135,0.04)_50%,transparent_75%)] pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity" />
+
+        {/* Cursor Spotlight Radial Glow with Ghost Purple Tone */}
         {mousePos.isHover && (
           <div
             style={{
-              background: `radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255, 255, 255, 0.06), transparent 70%)`,
+              background: `radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, rgba(192, 132, 252, 0.12), transparent 70%)`,
             }}
             className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-200"
           />
         )}
 
         {/* Top Tag & Title with Scrambled Kinetic Text Reveal */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#252525]">
+        <div className="flex items-center justify-between pb-4 border-b border-[#262130] relative z-20">
           <div>
-            <span className="text-[10px] font-mono-nav text-[#646e71] uppercase tracking-[2.4px]">
+            <span className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-[2.4px]">
               {current.tag}
             </span>
             <h3 className="text-2xl sm:text-3xl font-normal font-display text-[#e0e0e0] mt-0.5 flex items-baseline gap-2">
-              <span className="text-white font-medium">{scrambledTitle}</span>
-              <span className="text-sm font-sans text-[#828b8d]">
+              <span className="text-white font-medium drop-shadow-[0_0_12px_rgba(192,132,252,0.35)]">{scrambledTitle}</span>
+              <span className="text-sm font-sans text-[#8e889b]">
                 — {scrambledRole}
               </span>
             </h3>
@@ -1275,20 +1278,20 @@ export default function EventsSection({
               playBeep?.(1000, 0.06)
               onRegisterClick(current.title)
             }}
-            className="h-[38px] px-5 rounded-[100px] bg-[#1f1f23] hover:bg-[#28282e] border border-[#252525] hover:border-[#828b8d] text-[#e0e0e0] text-[12px] font-mono-nav tracking-[1.04px] flex items-center gap-2 cursor-pointer transition-all active:scale-95 shadow-sm"
+            className="h-[38px] px-5 rounded-[100px] bg-gradient-to-r from-[#1f1a2c] to-[#16141f] hover:from-[#2a223d] hover:to-[#1e192b] border border-[#7e22ce]/40 hover:border-[#c084fc] text-[#f3e8ff] hover:shadow-[0_0_20px_rgba(168,85,247,0.35)] text-[12px] font-mono-nav tracking-[1.04px] flex items-center gap-2 cursor-pointer transition-all active:scale-95 shadow-sm"
           >
             <span>REGISTER</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-[#646e71] group-hover:text-[#e0e0e0] transition-colors" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-[#c084fc] group-hover:text-white transition-colors" />
           </button>
         </div>
 
         {/* Short Summary */}
-        <p className="mt-5 text-[#828b8d] text-sm sm:text-base leading-[1.4] max-w-[700px]">
+        <p className="mt-5 text-[#8e889b] text-sm sm:text-base leading-[1.4] max-w-[700px] relative z-20">
           {current.summary}
         </p>
 
         {/* Dynamic Personalized Motion Visualizer (Tailored to each contest) */}
-        <div className="mt-6">
+        <div className="mt-6 relative z-20">
           <DynamicContestVisualizer
             current={current}
             onPointClick={(pt) => {}}
@@ -1296,14 +1299,14 @@ export default function EventsSection({
           />
         </div>
 
-        {/* Telemetry Matrix Grid with Clear Spacing */}
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-[#252525]">
+        {/* Telemetry Matrix Grid with Clear Spacing & Ghost Purple Borders */}
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-[#262130] relative z-20">
           {current.telemetry.map((t) => (
-            <div key={t.label} className="p-3 rounded-xl bg-[#010101] border border-[#252525]">
-              <div className="text-[10px] font-mono-nav text-[#646e71] uppercase tracking-wider">
+            <div key={t.label} className="p-3 rounded-xl bg-[#0b0912] border border-[#2a2436] hover:border-[#7e22ce]/50 transition-colors">
+              <div className="text-[10px] font-mono-nav text-[#8e889b] uppercase tracking-wider">
                 {t.label}
               </div>
-              <div className="text-xs sm:text-sm font-mono-nav text-[#e0e0e0] mt-1 font-medium">
+              <div className="text-xs sm:text-sm font-mono-nav text-[#f3e8ff] mt-1 font-medium">
                 {t.val}
               </div>
             </div>
