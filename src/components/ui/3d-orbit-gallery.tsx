@@ -101,7 +101,7 @@ function createContestCanvasTexture(contest: ContestItem) {
 
   // Role / Subhead in Muted Steel
   ctx.fillStyle = '#828b8d'
-  ctx.font = '400 30px "Inter", sans-serif'
+  ctx.font = '400 30px sans-serif'
   ctx.fillText(contest.role, 512, 280)
 
   // Telemetry Row Box (#010101 Void inset)
@@ -136,25 +136,29 @@ function createContestCanvasTexture(contest: ContestItem) {
   texture.minFilter = THREE.LinearFilter
   texture.magFilter = THREE.LinearFilter
   texture.generateMipmaps = true
-  texture.flipY = true // Standard top-to-bottom canvas alignment
+  texture.flipY = true
   texture.needsUpdate = true
   return texture
 }
 
 export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: string) => void }) {
-  const PARTICLE_COUNT = 900
+  // Ambient starry coordinate particles spanning the wide breadth
+  const PARTICLE_COUNT = 1100
   const PARTICLE_SIZE_MIN = 0.012
-  const PARTICLE_SIZE_MAX = 0.024
-  const SPHERE_RADIUS = 9.2
-  const POSITION_RANDOMNESS = 3.5
+  const PARTICLE_SIZE_MAX = 0.026
   const ROTATION_SPEED_X = 0.0
   const ROTATION_SPEED_Y = 0.0006
   const PARTICLE_OPACITY = 0.75
 
-  // Exactly 8 Elements in the spiral
+  // Wide panoramic orbital spread: extends completely from left to right
+  const RADIUS_X = 14.2
+  const RADIUS_Z = 7.8
+  const ELEVATION_RANGE = 1.3
+
+  // Exactly 8 large elements in the spiral
   const IMAGE_COUNT = 8
-  const CARD_WIDTH = 3.6
-  const CARD_HEIGHT = 2.3
+  const CARD_WIDTH = 3.8
+  const CARD_HEIGHT = 2.45
 
   const groupRef = useRef<THREE.Group>(null)
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
@@ -164,17 +168,19 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
     return CONTEST_LIST.map((c) => createContestCanvasTexture(c))
   }, [])
 
-  // Ambient Star Particles
+  // Ambient Star Particles spanning the wide elliptical breadth
   const particles = useMemo(() => {
     const list = []
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const phi = Math.acos(-1 + (2 * i) / PARTICLE_COUNT)
       const theta = Math.sqrt(PARTICLE_COUNT * Math.PI) * phi
-      const radiusVariation = SPHERE_RADIUS + (Math.random() - 0.5) * POSITION_RANDOMNESS
+      
+      const varX = RADIUS_X + (Math.random() - 0.5) * 4.5
+      const varZ = RADIUS_Z + (Math.random() - 0.5) * 3.5
 
-      const x = radiusVariation * Math.cos(theta) * Math.sin(phi)
-      const y = radiusVariation * Math.cos(phi)
-      const z = radiusVariation * Math.sin(theta) * Math.sin(phi)
+      const x = varX * Math.cos(theta) * Math.sin(phi)
+      const y = (Math.random() - 0.5) * 9
+      const z = varZ * Math.sin(theta) * Math.sin(phi)
 
       list.push({
         position: [x, y, z] as [number, number, number],
@@ -183,22 +189,24 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
       })
     }
     return list
-  }, [PARTICLE_COUNT, SPHERE_RADIUS, POSITION_RANDOMNESS, PARTICLE_SIZE_MIN, PARTICLE_SIZE_MAX])
+  }, [PARTICLE_COUNT, RADIUS_X, RADIUS_Z, PARTICLE_SIZE_MIN, PARTICLE_SIZE_MAX])
 
-  // Exactly 8 Orbiting Large Contest Cards with CORRECT outward-facing orientation
+  // 8 Orbiting Large Contest Cards spanning wide across the screen
   const orbitingImages = useMemo(() => {
     const list = []
     const dummy = new THREE.Object3D()
 
     for (let i = 0; i < IMAGE_COUNT; i++) {
       const angle = (i / IMAGE_COUNT) * Math.PI * 2
-      const x = SPHERE_RADIUS * Math.cos(angle)
-      const y = Math.sin((i / IMAGE_COUNT) * Math.PI * 2) * 1.0
-      const z = SPHERE_RADIUS * Math.sin(angle)
+      const x = RADIUS_X * Math.cos(angle)
+      const y = Math.sin((i / IMAGE_COUNT) * Math.PI * 2) * ELEVATION_RANGE
+      const z = RADIUS_Z * Math.sin(angle)
 
       dummy.position.set(x, y, z)
-      // Point the front (+Z) of the plane radially outward so it faces the viewer right-side up
-      dummy.lookAt(x * 2, y, z * 2)
+      // Normal radial outward vector for the ellipse
+      const outX = x / RADIUS_X
+      const outZ = z / RADIUS_Z
+      dummy.lookAt(x + outX * 5, y, z + outZ * 5)
 
       const contest = CONTEST_LIST[i % CONTEST_LIST.length]
 
@@ -210,7 +218,7 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
       })
     }
     return list
-  }, [IMAGE_COUNT, SPHERE_RADIUS, textures.length])
+  }, [IMAGE_COUNT, RADIUS_X, RADIUS_Z, ELEVATION_RANGE, textures.length])
 
   useFrame(() => {
     if (groupRef.current) {
@@ -221,7 +229,7 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
 
   return (
     <group ref={groupRef}>
-      {/* Background ambient particle sphere */}
+      {/* Background ambient particle coordinates */}
       {particles.map((p, idx) => (
         <mesh key={idx} position={p.position} scale={p.scale}>
           <sphereGeometry args={[1, 8, 6]} />
@@ -229,7 +237,7 @@ export function ParticleSphere({ onSelectEvent }: { onSelectEvent?: (title: stri
         </mesh>
       ))}
 
-      {/* 8 Correctly Oriented Orbiting Contest Placards */}
+      {/* 8 Outward-facing Large Contest Cards spanning wide from left to right */}
       {orbitingImages.map((img, idx) => {
         const isHovered = hoveredIdx === idx
         return (
@@ -275,13 +283,22 @@ export function OrbitGalleryCanvas({
 }) {
   return (
     <div className={`relative ${className}`}>
-      <Canvas camera={{ position: [-12, 2.2, 12], fov: 46 }}>
-        <ambientLight intensity={0.8} />
-        <pointLight position={[10, 10, 10]} intensity={1.2} />
+      {/* Centered camera with wide horizontal view spanning left to right */}
+      <Canvas camera={{ position: [0, 2.0, 16], fov: 48 }}>
+        <ambientLight intensity={0.85} />
+        <pointLight position={[0, 12, 14]} intensity={1.3} />
         <Suspense fallback={null}>
           <ParticleSphere onSelectEvent={onSelectEvent} />
         </Suspense>
-        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+        <OrbitControls 
+          enablePan={true} 
+          enableZoom={true} 
+          enableRotate={true}
+          minDistance={9}
+          maxDistance={26}
+          maxPolarAngle={Math.PI / 1.7}
+          minPolarAngle={Math.PI / 3.4}
+        />
       </Canvas>
     </div>
   )
