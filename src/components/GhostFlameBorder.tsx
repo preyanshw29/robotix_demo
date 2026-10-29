@@ -1,28 +1,21 @@
 "use client"
 
 import React, { useRef, useEffect, useState } from 'react'
+import { GhostFlameBorderProps, EmberParticle } from '../types'
 
-interface GhostFlameBorderProps {
-  children: React.ReactNode
-  className?: string
-  radius?: number
-  intensity?: 'subtle' | 'medium' | 'high'
-  showEmbers?: boolean
-}
+/**
+ * ============================================================================
+ * GHOST FLAME BORDER & SCATTERING DUST PARTICLES
+ * File: src/components/GhostFlameBorder.tsx
+ * Technology: React 19 + HTML5 Canvas 2D Physics Animation Loop
+ * Description:
+ *   Wraps any informational block / card with an animated procedural flame
+ *   contour along its perimeter. Continuous dust ember sparks detach and
+ *   float upward into the void, swaying with sinusoidal wind oscillations.
+ * ============================================================================
+ */
 
-interface Ember {
-  x: number
-  y: number
-  vx: number
-  vy: number
-  size: number
-  alpha: number
-  decay: number
-  color: string
-  wobbleSpeed: number
-  wobbleOffset: number
-}
-
+// Saturated spectral ember palette spanning white-hot lilac to deep plum
 const EMBER_COLORS = [
   '#ffffff', // White-hot core
   '#fae8ff', // Ghost lilac
@@ -56,7 +49,7 @@ export default function GhostFlameBorder({
     let isVisible = true
 
     // Responsive Canvas Resizing with Margin for floating dust embers
-    const MARGIN = 36 // extra padding for scattering embers to float away
+    const MARGIN = 36 // Extra pixel padding around card boundaries for ember dispersion
     let width = 0
     let height = 0
     let cardW = 0
@@ -71,35 +64,36 @@ export default function GhostFlameBorder({
     }
     updateSize()
 
+    // Observe container size dynamically across responsive breakpoints
     const ro = new ResizeObserver(updateSize)
     ro.observe(container)
 
-    // Visibility Observer to pause when scrolled away
+    // Visibility Observer to pause requestAnimationFrame when scrolled offscreen (saves GPU/CPU)
     const io = new IntersectionObserver(([entry]) => {
       isVisible = entry.isIntersecting
     })
     io.observe(container)
 
-    // Particle Dust Embers Pool
+    // Particle Dust Embers Pool sizing based on intensity prop
     const emberCount = intensity === 'high' ? 32 : intensity === 'medium' ? 22 : 14
-    const embers: Ember[] = []
+    const embers: EmberParticle[] = []
 
-    const spawnEmber = (): Ember => {
-      // Spawn mostly on top border, and upper 30% of left/right sides
+    // Spawns a new ember along the card's perimeter with randomized initial physics
+    const spawnEmber = (): EmberParticle => {
       const spawnType = Math.random()
       let x = MARGIN
       let y = MARGIN
 
       if (spawnType < 0.75) {
-        // Top edge
+        // 75% spawn chance along the top edge
         x = MARGIN + Math.random() * cardW
         y = MARGIN + (Math.random() - 0.5) * 4
       } else if (spawnType < 0.88) {
-        // Left upper edge
+        // 13% spawn chance along upper left edge
         x = MARGIN + (Math.random() - 0.5) * 3
         y = MARGIN + Math.random() * (cardH * 0.4)
       } else {
-        // Right upper edge
+        // 12% spawn chance along upper right edge
         x = MARGIN + cardW + (Math.random() - 0.5) * 3
         y = MARGIN + Math.random() * (cardH * 0.4)
       }
@@ -108,7 +102,7 @@ export default function GhostFlameBorder({
         x,
         y,
         vx: (Math.random() - 0.5) * 0.6,
-        vy: -(Math.random() * 0.8 + 0.4), // Floating gently upward
+        vy: -(Math.random() * 0.8 + 0.4), // Float gently upward against gravity
         size: Math.random() * 1.8 + 0.8,
         alpha: Math.random() * 0.7 + 0.3,
         decay: Math.random() * 0.014 + 0.008,
@@ -118,13 +112,15 @@ export default function GhostFlameBorder({
       }
     }
 
+    // Seed initial pre-dispersed embers so animation starts seamlessly without delay
     for (let i = 0; i < emberCount; i++) {
       const e = spawnEmber()
-      e.y -= Math.random() * 30 // pre-disperse
+      e.y -= Math.random() * 30
       e.alpha = Math.max(0, e.alpha - Math.random() * 0.5)
       embers.push(e)
     }
 
+    // Main 60 FPS Render Loop
     const render = () => {
       if (!isVisible) {
         animationId = requestAnimationFrame(render)
@@ -175,7 +171,7 @@ export default function GhostFlameBorder({
       ctx.stroke()
       ctx.restore()
 
-      // Licking flame pulses along the top edge
+      // Licking flame pulses along the top edge using harmonic sine waves
       ctx.save()
       const flameGradient = ctx.createLinearGradient(cx, cy - 8, cx, cy + 2)
       flameGradient.addColorStop(0, 'rgba(232, 121, 249, 0.85)')
@@ -186,14 +182,14 @@ export default function GhostFlameBorder({
       ctx.beginPath()
       ctx.moveTo(cx + r, cy)
 
-      // Undulating flame wave along the top border
+      // Undulating flame wave equation along top horizontal boundary
       for (let x = cx + r; x <= cx + cw - r; x += 4) {
         const norm = (x - cx) / cw
         const flameHeight =
           (Math.sin(norm * 16 + time * 3.5) * 3 +
             Math.cos(norm * 28 - time * 4.2) * 2 +
             (isHovered ? 3.5 : 1.5)) *
-          Math.sin(norm * Math.PI) // tapered at edges
+          Math.sin(norm * Math.PI) // Tapered gracefully at corner boundaries
 
         ctx.lineTo(x, cy - Math.max(0, flameHeight))
       }
@@ -203,7 +199,7 @@ export default function GhostFlameBorder({
       ctx.restore()
 
       // ======================================================================
-      // 2. TIME-BITS OF DUST SCATTERING (Floating Ember Sparks)
+      // 2. SCATTERING DUST PARTICLES (Floating Ember Sparks)
       // ======================================================================
       if (showEmbers) {
         const speedBoost = isHovered ? 1.4 : 1.0
@@ -211,12 +207,12 @@ export default function GhostFlameBorder({
         for (let i = 0; i < embers.length; i++) {
           const e = embers[i]
 
-          // Motion with gentle sinusoidal wind wobble
+          // Kinetic update: upward drift + sinusoidal wind wobble
           e.y += e.vy * speedBoost
           e.x += e.vx + Math.sin(time * 2 + e.wobbleOffset) * 0.4
           e.alpha -= e.decay
 
-          // Respawn ember when dissolved or floated out of bounds
+          // Respawn ember when faded out or floated out of canvas bounds
           if (e.alpha <= 0 || e.y < 0 || e.x < 0 || e.x > width) {
             embers[i] = spawnEmber()
             continue
@@ -234,7 +230,7 @@ export default function GhostFlameBorder({
           ctx.globalAlpha = Math.max(0, Math.min(1, e.alpha))
           ctx.fill()
 
-          // Hot inner core dot
+          // Hot inner core dot for particles larger than 1.2px
           if (e.size > 1.2) {
             ctx.beginPath()
             ctx.arc(e.x, e.y, e.size * 0.45, 0, Math.PI * 2)
@@ -276,10 +272,11 @@ export default function GhostFlameBorder({
         }}
       />
 
-      {/* Child Content */}
+      {/* Enclosed React Child Component */}
       <div className="relative z-10 w-full h-full">
         {children}
       </div>
     </div>
   )
 }
+

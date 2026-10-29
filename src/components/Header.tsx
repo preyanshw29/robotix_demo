@@ -1,16 +1,41 @@
+/**
+ * ============================================================================
+ * ROBOFEST '26 — TOP NAVIGATION & TELEMETRY CONTROLS
+ * File: src/components/Header.tsx
+ * Description: Persistent 76px sticky header providing brand identity, section 
+ *              anchor routing with counters, Web Audio sound feedback toggle, 
+ *              and mobile drawer navigation.
+ * ============================================================================
+ */
+
 import React, { useState } from 'react'
 import { Volume2, VolumeX, Menu, X, ArrowUpRight } from 'lucide-react'
+import type { HeaderProps } from '../types'
 
-export default function Header({ onRegisterClick, soundEnabled, setSoundEnabled, playBeep }) {
+/**
+ * Header Component
+ * Renders the top navigation bar with glassmorphic backdrop blur,
+ * high-contrast ghost purple indicators, and audio synthesizer toggle.
+ */
+export default function Header({
+  onRegisterClick,
+  soundEnabled,
+  setSoundEnabled,
+  playBeep,
+}: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Primary navigation anchors with section counters
   const navLinks = [
     { label: 'ABOUT', href: '#about', counter: '01' },
     { label: 'CONTESTS', href: '#contests', counter: '04' },
     { label: 'PASS', href: '#register', counter: '01' },
   ]
 
-  const handleLinkClick = (href) => {
+  /**
+   * Smoothly scrolls to target anchor and emits synthesizer audio feedback
+   */
+  const handleLinkClick = (href: string) => {
     playBeep?.(800, 0.04)
     setMobileMenuOpen(false)
     const elem = document.querySelector(href)
@@ -23,12 +48,17 @@ export default function Header({ onRegisterClick, soundEnabled, setSoundEnabled,
     <header className="sticky top-0 z-50 w-full h-[76px] bg-[#010101]/95 backdrop-blur-md border-b border-[#262130]">
       <div className="max-w-[940px] h-full mx-auto px-4 flex items-center justify-between">
         
-        {/* Wordmark + Mono coordinate with Ghost Purple Core */}
+        {/* Brand Wordmark & Coordinate Badge */}
         <a 
           href="#" 
-          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); playBeep?.(700, 0.05); }}
+          onClick={(e) => { 
+            e.preventDefault()
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+            playBeep?.(700, 0.05)
+          }}
           className="flex items-center gap-3 cursor-pointer group"
         >
+          {/* Pulsing Ghost Core */}
           <div className="w-6 h-6 rounded-full border border-[#7e22ce]/40 bg-[#13111a] flex items-center justify-center group-hover:border-[#c084fc] group-hover:shadow-[0_0_10px_rgba(168,85,247,0.4)] transition-all">
             <div className="w-2 h-2 bg-[#c084fc] rounded-sm group-hover:scale-125 transition-transform" />
           </div>
@@ -42,7 +72,7 @@ export default function Header({ onRegisterClick, soundEnabled, setSoundEnabled,
           </div>
         </a>
 
-        {/* Desktop Navigation: Separate #1a1523 pills with ghost purple accents */}
+        {/* Desktop Navigation: Compact pill buttons with section counters */}
         <nav className="hidden md:flex items-center gap-2">
           {navLinks.map((link) => (
             <button
@@ -56,8 +86,9 @@ export default function Header({ onRegisterClick, soundEnabled, setSoundEnabled,
           ))}
         </nav>
 
-        {/* Right Controls */}
+        {/* Right Audio Toggle & Direct Registration CTA */}
         <div className="hidden sm:flex items-center gap-2">
+          {/* Audio Synthesizer Toggle */}
           <button
             onClick={() => {
               const next = !soundEnabled
@@ -70,6 +101,7 @@ export default function Header({ onRegisterClick, soundEnabled, setSoundEnabled,
             {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-[#c084fc]" /> : <VolumeX className="w-3.5 h-3.5" />}
           </button>
 
+          {/* Delegate Registration Trigger */}
           <button
             onClick={() => {
               playBeep?.(1000, 0.08)
@@ -82,16 +114,17 @@ export default function Header({ onRegisterClick, soundEnabled, setSoundEnabled,
           </button>
         </div>
 
-        {/* Mobile Toggle */}
+        {/* Mobile Navigation Drawer Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="sm:hidden w-8 h-8 rounded-full bg-[#1f1f23] flex items-center justify-center text-[#e0e0e0]"
+          aria-label="Toggle Mobile Navigation"
         >
           {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
         </button>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Dropdown */}
       {mobileMenuOpen && (
         <div className="sm:hidden bg-[#010101] border-b border-[#252525] px-4 py-4 flex flex-col gap-2">
           {navLinks.map((link) => (
@@ -101,7 +134,7 @@ export default function Header({ onRegisterClick, soundEnabled, setSoundEnabled,
               className="w-full text-left py-2 px-3 rounded-[100px] bg-[#1f1f23] text-[#e0e0e0] text-[13px] font-mono-nav flex items-center justify-between"
             >
               <span>{link.label}</span>
-              <span className="text-[#646e71]">({link.counter})</span>
+              <span className="text-[#a855f7]">({link.counter})</span>
             </button>
           ))}
           <button

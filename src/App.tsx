@@ -1,3 +1,15 @@
+/**
+ * ============================================================================
+ * ROBOFEST '26 — MAIN APPLICATION ROOT
+ * File: src/App.tsx
+ * Description: Core Single Page Application (SPA) orchestrator:
+ *              - Web Audio API real-time UI synthesizer audio synthesis
+ *              - Scroll-triggered dynamic floating navigation dock
+ *              - Ambient degrading ghost-purple plasma flame background wisps
+ *              - Synchronized state between Header, Hero, About, Events, and Registration
+ * ============================================================================
+ */
+
 import React, { useState, useEffect } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
@@ -6,19 +18,33 @@ import EventsSection from './components/EventsSection'
 import RegistrationSection from './components/RegistrationSection'
 import Footer from './components/Footer'
 
+/**
+ * Root Application Component
+ */
 export default function App() {
+  // Global Audio Feedback State
   const [soundEnabled, setSoundEnabled] = useState(false)
+
+  // Delegate Pass Registration Modal State
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState('AeroVision')
+
+  // Bottom Floating Navigation Visibility State
   const [showFloatingNav, setShowFloatingNav] = useState(false)
 
-  // Web Audio UI Synthesizer
+  /**
+   * Procedural Web Audio API Synthesizer
+   * Produces an ultra-clean sine-wave click/chirp without requiring external audio assets.
+   * 
+   * @param freq Pitch frequency in Hertz (default 800 Hz)
+   * @param duration Tone decay duration in seconds (default 0.04s)
+   */
   const playBeep = (freq = 800, duration = 0.04) => {
     if (!soundEnabled) return
     try {
-      const AudioContext = window.AudioContext || (window as any).webkitAudioContext
-      if (!AudioContext) return
-      const ctx = new AudioContext()
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
 
@@ -33,11 +59,12 @@ export default function App() {
 
       osc.start()
       osc.stop(ctx.currentTime + duration)
-    } catch (e) {
-      // AudioContext policy suppression fallback
+    } catch {
+      // AudioContext policy suppression fallback (silent ignore)
     }
   }
 
+  // Scroll position listener for floating pill dock
   useEffect(() => {
     const handleScroll = () => {
       setShowFloatingNav(window.scrollY > 350)
@@ -46,6 +73,9 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  /**
+   * Opens the pass registration modal, optionally pre-selecting a gauntlet track
+   */
   const handleOpenRegister = (eventTitle?: string) => {
     if (eventTitle && typeof eventTitle === 'string') {
       setSelectedEvent(eventTitle)
@@ -53,6 +83,9 @@ export default function App() {
     setIsRegisterModalOpen(true)
   }
 
+  /**
+   * Smooth scrolls to target section ID with audio feedback
+   */
   const scrollToSection = (id: string) => {
     playBeep(850, 0.04)
     const el = document.getElementById(id)
@@ -109,7 +142,7 @@ export default function App() {
       {/* Closing Utility Footer */}
       <Footer playBeep={playBeep} />
 
-      {/* Floating Section Navigation (AWE Component: centered row of #1f1f23 pills with ghost-purple rim) */}
+      {/* Floating Section Navigation (Centered row of #1f1f23 pills with ghost-purple rim) */}
       {showFloatingNav && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-2 p-1 rounded-[100px] bg-[#0d0c12]/90 backdrop-blur-md border border-[#7e22ce]/30 shadow-[0_10px_35px_rgba(0,0,0,0.9),0_0_20px_rgba(168,85,247,0.15)]">
           {[

@@ -5,6 +5,18 @@ import { Canvas, useFrame } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import * as THREE from "three"
 
+/**
+ * ============================================================================
+ * 3D ORBIT GALLERY COMPONENT
+ * File: src/components/ui/3d-orbit-gallery.tsx
+ * Technology: Three.js + React Three Fiber + React Three Drei
+ * Description:
+ *   Renders a panoramic, full-breadth elliptical 3D carousel featuring 8 large,
+ *   outward-facing competition placards generated dynamically from 2D Canvas
+ *   textures, surrounded by 1,100 cosmic star embers in Ghost Purple & Fuchsia.
+ * ============================================================================
+ */
+
 export interface ContestItem {
   id: string
   title: string
@@ -49,6 +61,10 @@ export const CONTEST_LIST: ContestItem[] = [
   },
 ]
 
+/**
+ * Generates an in-memory 1024x660 HTML5 Canvas texture for a competition card.
+ * Incorporates high-contrast Ghost Purple borders, white-hot typography, and CTA pills.
+ */
 function createContestCanvasTexture(contest: ContestItem) {
   const canvas = document.createElement('canvas')
   canvas.width = 1024

@@ -1,3 +1,16 @@
+/**
+ * ============================================================================
+ * ABOUT SECTION COMPONENT
+ * File: src/components/AboutSection.tsx
+ * Technology: React 19 + Tailwind CSS + GhostFlameBorder
+ * Description:
+ *   Editorial overview of Robofest '26 technical proving ground.
+ *   Features a balanced 2-column narrative layout paired with 4 geometric
+ *   metric square cards featuring springy bulge-out physics and undulating
+ *   Ghost Purple flame borders with scattering dust embers.
+ * ============================================================================
+ */
+
 import React from 'react'
 import GhostFlameBorder from './GhostFlameBorder'
 

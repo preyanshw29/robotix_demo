@@ -1,12 +1,30 @@
-"use client"
+/**
+ * ============================================================================
+ * ROBOFEST '26 — CONTESTS & GAUNTLETS SECTION
+ * File: src/components/EventsSection.tsx
+ * Description: Engineering gauntlets showcase featuring:
+ *              - Lusion-inspired procedural text decryption / decrypt scrambler
+ *              - Interactive 3D perspective magnetic tilt card with cursor radial spotlight
+ *              - Perimeter licking ghost flame canvas border with scattering dust embers
+ *              - 4 personalized 60 FPS motion graphics canvas simulators:
+ *                (1) AeroVision (Neon Gate Aerial Navigation)
+ *                (2) Mecha Gauntlet (Trotting Quadruped IK & Multi-Surface Terrain)
+ *                (3) NeuroBotix (Dual Alpha/Beta EEG & 6-DOF Robotic Arm)
+ *                (4) Cyber Salvage (360° LiDAR Ray-Casting & FLIR Thermal Beacon)
+ * ============================================================================
+ */
 
 import React, { useState, useEffect, useRef } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import GhostFlameBorder from './GhostFlameBorder'
-import { DynamicContestVisualizer, ContestProtocol } from './simulators'
+import { DynamicContestVisualizer } from './simulators'
+import type { ContestProtocol } from '../types'
 
 export type { ContestProtocol }
 
+/**
+ * 4 Core Engineering Gauntlet Protocols Specification
+ */
 export const CONTESTS: ContestProtocol[] = [
   {
     id: 'aerovision',
@@ -98,14 +116,17 @@ export const CONTESTS: ContestProtocol[] = [
   },
 ]
 
-// Lusion-Style Text Decrypt / Scramble Hook
-function useScrambleText(targetText: string, triggerKey: any) {
+/**
+ * Lusion-Style Text Decrypt / Scramble Hook
+ * Progressively reveals clear text by cycling random glyphs at 20ms intervals.
+ */
+function useScrambleText(targetText: string, triggerKey: any): string {
   const [displayText, setDisplayText] = useState(targetText)
   const chars = '_01X#/[ ]*+=%&<>'
 
   useEffect(() => {
     let iteration = 0
-    let interval: any = null
+    let interval: ReturnType<typeof setInterval> | null = null
     const maxIterations = targetText.length * 2.5
 
     interval = setInterval(() => {
@@ -121,18 +142,23 @@ function useScrambleText(targetText: string, triggerKey: any) {
       )
 
       if (iteration >= maxIterations) {
-        clearInterval(interval)
+        if (interval) clearInterval(interval)
         setDisplayText(targetText)
       }
       iteration += 1
     }, 20)
 
-    return () => clearInterval(interval)
+    return () => {
+      if (interval) clearInterval(interval)
+    }
   }, [targetText, triggerKey])
 
   return displayText
 }
 
+/**
+ * EventsSection Component
+ */
 export default function EventsSection({
   onRegisterClick,
   playBeep,
@@ -143,7 +169,7 @@ export default function EventsSection({
   const [activeIdx, setActiveIdx] = useState(0)
   const current = CONTESTS[activeIdx]
 
-  // Lusion Text Decrypt Animation
+  // Lusion Text Decrypt Animation for Title and Operational Role
   const scrambledTitle = useScrambleText(current.title, activeIdx)
   const scrambledRole = useScrambleText(current.role, activeIdx)
 

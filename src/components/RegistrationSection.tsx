@@ -1,23 +1,45 @@
+/**
+ * ============================================================================
+ * ROBOFEST '26 — REGISTRATION & DELEGATE CREDENTIAL SYSTEM
+ * File: src/components/RegistrationSection.tsx
+ * Description: Delegate pass generation and verification module:
+ *              - Real-time cryptographic Pass ID creation ("RF26-XXXX")
+ *              - Dynamic QR Code rendering via react-qr-code
+ *              - Canvas confetti burst effect upon claim
+ *              - Interactive customization modal with contest protocol selector
+ *              - Enclosed in animated GhostFlameBorder with drifting embers
+ * ============================================================================
+ */
+
 import React, { useState, useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import { QrCode, ArrowUpRight, X, Download, FileText, CheckCircle2 } from 'lucide-react'
 import { CONTESTS } from './EventsSection'
 import GhostFlameBorder from './GhostFlameBorder'
+import type { RegistrationFormData } from '../types'
 
 interface RegistrationProps {
+  /** Selected event prefilled from prior section CTA */
   initialEvent: string
+  /** Whether modal dialog is visible */
   isModalOpen: boolean
+  /** Modal visibility state updater */
   setIsModalOpen: (open: boolean) => void
+  /** Synthesizer audio beep feedback trigger */
   playBeep?: (freq?: number, duration?: number) => void
 }
 
+/**
+ * RegistrationSection Component
+ */
 export default function RegistrationSection({
   initialEvent,
   isModalOpen,
   setIsModalOpen,
   playBeep,
 }: RegistrationProps) {
-  const [formData, setFormData] = useState({
+  // Delegate pass form state
+  const [formData, setFormData] = useState<RegistrationFormData>({
     name: 'Kshitij Verma',
     college: 'NIT Raipur',
     selectedEvent: initialEvent || 'AeroVision',
@@ -26,6 +48,7 @@ export default function RegistrationSection({
   const [submitted, setSubmitted] = useState(false)
   const [modalTab, setModalTab] = useState<'info' | 'register'>('register')
 
+  // Sync selected event when user clicks "REGISTER" inside a specific contest card
   useEffect(() => {
     if (initialEvent) {
       setFormData((prev) => ({ ...prev, selectedEvent: initialEvent }))
@@ -34,6 +57,9 @@ export default function RegistrationSection({
 
   const selectedContestData = CONTESTS.find((c) => c.title === formData.selectedEvent) || CONTESTS[0]
 
+  /**
+   * Handle delegate pass claim with random pass ID generation & confetti burst
+   */
   const handleClaim = (e: React.FormEvent) => {
     e.preventDefault()
     playBeep?.(1200, 0.08)
@@ -41,6 +67,7 @@ export default function RegistrationSection({
     setFormData((prev) => ({ ...prev, passId: randomId }))
     setSubmitted(true)
 
+    // Spectral purple confetti burst
     confetti({
       particleCount: 50,
       spread: 60,
@@ -98,199 +125,176 @@ export default function RegistrationSection({
                 </span>
               </div>
 
-              <div className="mt-4 flex items-start justify-between">
-                <div>
-                  <span className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-[2px] block">
-                    OPERATIVE
-                  </span>
-                  <span className="text-base font-medium text-[#fae8ff] block mt-0.5 drop-shadow-[0_0_8px_rgba(232,121,249,0.4)]">
-                    {formData.name || 'DELEGATE OPERATIVE'}
-                  </span>
-
-                  <span className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-[2px] block mt-2">
-                    AFFILIATION
-                  </span>
-                  <span className="text-xs text-[#fae8ff] block mt-0.5">
-                    {formData.college || 'NIT Raipur'}
-                  </span>
+              <div className="mt-4 flex items-center gap-4">
+                <div className="w-16 h-16 rounded-xl bg-[#0d0718] border border-[#3b0764] flex items-center justify-center p-2">
+                  <QrCode className="w-full h-full text-[#c084fc]" />
                 </div>
-
-                <div className="p-2 rounded-lg bg-[#24133b] border border-[#e879f9]/50 shadow-[0_0_15px_rgba(217,70,239,0.4)]">
-                  <QrCode className="w-12 h-12 text-[#fae8ff]" />
+                <div>
+                  <div className="text-base font-semibold text-white">
+                    {formData.name}
+                  </div>
+                  <div className="text-xs font-mono-nav text-[#a89cb8]">
+                    {formData.college}
+                  </div>
+                  <div className="mt-1 inline-block px-2 py-0.5 rounded-[100px] bg-[#2a1340] border border-[#701a75] text-[10px] font-mono-nav text-[#e879f9]">
+                    {formData.selectedEvent}
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#3b0764]/60 flex items-center justify-between">
-                <span className="text-[11px] font-mono-nav text-[#a89cb8]">
-                  TRACK: <span className="text-[#fae8ff] font-medium">{formData.selectedEvent}</span>
+              <div className="mt-4 pt-3 border-t border-[#3b0764]/60 flex items-center justify-between text-[11px] font-mono-nav text-[#a89cb8]">
+                <span>VALID: OCT 2026</span>
+                <span className="text-[#4ade80] flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-[#4ade80]" /> VERIFIED
                 </span>
-                <div className="flex gap-0.5 h-5 items-end">
-                  {[3, 6, 2, 5, 7, 3, 6, 4, 7, 3, 6].map((h, i) => (
-                    <span
-                      key={i}
-                      style={{ height: `${h * 2.5}px` }}
-                      className="w-[2px] bg-[#e879f9] inline-block shadow-[0_0_4px_#e879f9]"
-                    />
-                  ))}
-                </div>
               </div>
             </div>
           </GhostFlameBorder>
         </div>
 
-        {/* Action Column */}
-        <div className="flex-1 max-w-[420px] relative z-10">
-          <span className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-[2.4px]">
-            PROTOCOL ACCESS
-          </span>
-          <h3 className="text-xl font-semibold text-[#e0e0e0] mt-1">
-            Immediate Accreditation
-          </h3>
-          <p className="mt-2 text-sm text-[#8e889b] leading-[1.4]">
-            Delegates receive access to observation decks, telemetry logs, and keynote stages with zero entry barriers.
-          </p>
+        {/* Right Feature Info */}
+        <div className="flex-1 flex flex-col justify-between max-w-[420px]">
+          <div>
+            <div className="text-[12px] font-mono-nav text-[#c084fc] uppercase tracking-wider">
+              INCLUDED ACCESS PROTOCOLS
+            </div>
+            <ul className="mt-3 space-y-2.5 text-sm text-[#8e889b]">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#c084fc]" />
+                <span>All 4 live competitive engineering arenas</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#c084fc]" />
+                <span>Hardware sandbox & Edge-AI compute clusters</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#c084fc]" />
+                <span>Keynotes by leading aerospace & robotics pioneers</span>
+              </li>
+            </ul>
+          </div>
 
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-6 pt-4 border-t border-[#262130] flex items-center gap-3">
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="h-[38px] px-5 rounded-[100px] bg-gradient-to-r from-[#1f1a2c] to-[#16141f] hover:from-[#2a223d] hover:to-[#1e192b] border border-[#7e22ce]/40 hover:border-[#c084fc] text-[#f3e8ff] hover:shadow-[0_0_20px_rgba(168,85,247,0.35)] text-[13px] font-mono-nav tracking-[1.04px] flex items-center gap-2 cursor-pointer transition-all shadow-sm"
+              onClick={() => {
+                playBeep?.(1000, 0.05)
+                setIsModalOpen(true)
+              }}
+              className="h-[36px] px-5 rounded-[100px] bg-gradient-to-r from-[#701a75] via-[#4a044e] to-[#2e1065] hover:from-[#a21caf] hover:to-[#581c87] border border-[#e879f9]/50 hover:border-[#fae8ff] text-[#fae8ff] hover:shadow-[0_0_20px_rgba(232,121,249,0.4)] text-[12px] font-mono-nav tracking-[1.04px] flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-md"
             >
-              <span>ISSUE PASS</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#c084fc]" />
+              <span>CLAIM PASS</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#fae8ff]" />
             </button>
+            <span className="text-[11px] font-mono-nav text-[#8e889b]">
+              COMPLIMENTARY ADMISSION
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Comprehensive Event Info & Registration Modal */}
+      {/* Modal Dialog for Pass Customization & Event Registration */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#010101]/90 backdrop-blur-md">
-          <div className="relative w-full max-w-[540px] rounded-2xl bg-[#13111a] border border-[#7e22ce]/40 p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(168,85,247,0.2)]">
-            
-            {/* Modal Header with Event Name */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#262130]">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono-nav text-[#f3e8ff]">
-                  {selectedContestData.code} // <span className="text-[#c084fc]">{selectedContestData.title.toUpperCase()}</span>
-                </span>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-[500px] rounded-2xl bg-[#090510] border border-[#a855f7]/50 shadow-[0_0_50px_rgba(168,85,247,0.35)] p-6 sm:p-8">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#180e28] text-[#fae8ff] flex items-center justify-center hover:bg-[#2a1340] border border-[#3b0764] transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Modal Tabs */}
+            <div className="flex gap-2 border-b border-[#3b0764] pb-3 mb-6">
               <button
-                onClick={() => setIsModalOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#1c152a] border border-[#7e22ce]/30 flex items-center justify-center text-[#8e889b] hover:text-[#f3e8ff] cursor-pointer transition-colors"
+                onClick={() => setModalTab('register')}
+                className={`text-xs font-mono-nav px-3 py-1.5 rounded-full transition-all cursor-pointer ${
+                  modalTab === 'register'
+                    ? 'bg-[#2a1340] text-[#fae8ff] border border-[#e879f9]'
+                    : 'text-[#a89cb8] hover:text-[#fae8ff]'
+                }`}
               >
-                <X className="w-3.5 h-3.5" />
+                PASS CUSTOMIZER
+              </button>
+              <button
+                onClick={() => setModalTab('info')}
+                className={`text-xs font-mono-nav px-3 py-1.5 rounded-full transition-all cursor-pointer ${
+                  modalTab === 'info'
+                    ? 'bg-[#2a1340] text-[#fae8ff] border border-[#e879f9]'
+                    : 'text-[#a89cb8] hover:text-[#fae8ff]'
+                }`}
+              >
+                TRACK INTEL
               </button>
             </div>
 
-            {/* Event Info Briefing Box */}
-            <div className="mt-4 p-4 rounded-xl bg-[#09070f] border border-[#2a2436]">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono-nav text-[#c084fc] uppercase tracking-wider">
-                  {selectedContestData.tag}
-                </span>
-                <span className="text-xs font-mono-nav text-[#f3e8ff]">
-                  PURSE: <span className="text-[#c084fc] font-bold">{selectedContestData.telemetry.find(t => t.label === 'PURSE')?.val}</span>
-                </span>
-              </div>
-              <p className="mt-2 text-xs text-[#8e889b] leading-relaxed">
-                {selectedContestData.summary}
-              </p>
-              
-              <div className="mt-3 pt-3 border-t border-[#262130] grid grid-cols-2 gap-2 text-[11px] font-mono-nav text-[#8e889b]">
-                {selectedContestData.telemetry.slice(0, 2).map((t) => (
-                  <div key={t.label}>
-                    <span>{t.label}: </span>
-                    <span className="text-[#f3e8ff]">{t.val}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {submitted ? (
-              <div className="py-6 flex flex-col items-center text-center">
-                <div className="w-10 h-10 rounded-full bg-[#1c152a] border border-[#a855f7]/60 flex items-center justify-center text-[#c084fc] shadow-[0_0_15px_rgba(168,85,247,0.3)] mb-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#c084fc]" />
-                </div>
-                <span className="text-xs font-mono-nav text-[#f3e8ff] uppercase tracking-wider">
-                  CREDENTIAL ISSUED // {formData.passId}
-                </span>
-                <p className="text-xs text-[#8e889b] mt-2">
-                  Assigned to <span className="text-[#f3e8ff] font-medium">{formData.name}</span> for <span className="text-[#c084fc]">{formData.selectedEvent}</span>.
-                </p>
-                <div className="mt-6 flex gap-2">
-                  <button
-                    onClick={() => window.print()}
-                    className="h-[36px] px-4 rounded-[100px] bg-[#1c152a] text-[#f3e8ff] text-xs font-mono-nav flex items-center gap-2 border border-[#7e22ce]/40 hover:border-[#c084fc] cursor-pointer transition-all"
-                  >
-                    <Download className="w-3 h-3 text-[#c084fc]" />
-                    <span>PRINT / PDF</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSubmitted(false)
-                      setIsModalOpen(false)
-                    }}
-                    className="h-[36px] px-4 rounded-[100px] bg-gradient-to-r from-[#c084fc] to-[#a855f7] hover:from-[#d8b4fe] hover:to-[#c084fc] text-[#010101] text-xs font-mono-nav font-medium cursor-pointer transition-all shadow-[0_0_15px_rgba(168,85,247,0.4)]"
-                  >
-                    <span>CLOSE</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleClaim} className="mt-5 flex flex-col gap-4 text-xs font-mono-nav">
+            {modalTab === 'register' ? (
+              <form onSubmit={handleClaim} className="space-y-4">
                 <div>
-                  <label className="text-[#646e71] block mb-1">OPERATIVE NAME</label>
+                  <label className="block text-[11px] font-mono-nav text-[#c084fc] uppercase mb-1">
+                    Delegate Full Name
+                  </label>
                   <input
                     type="text"
-                    required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full h-[38px] px-3 rounded-lg bg-[#010101] border border-[#252525] focus:border-[#e0e0e0] text-[#e0e0e0] focus:outline-none"
+                    required
+                    className="w-full h-10 px-3 rounded-lg bg-[#180e28] border border-[#3b0764] text-[#fae8ff] text-sm focus:outline-none focus:border-[#e879f9] transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[#646e71] block mb-1">AFFILIATION / COLLEGE</label>
+                  <label className="block text-[11px] font-mono-nav text-[#c084fc] uppercase mb-1">
+                    Institution / University
+                  </label>
                   <input
                     type="text"
-                    required
                     value={formData.college}
                     onChange={(e) => setFormData({ ...formData, college: e.target.value })}
-                    className="w-full h-[38px] px-3 rounded-lg bg-[#010101] border border-[#252525] focus:border-[#e0e0e0] text-[#e0e0e0] focus:outline-none"
+                    required
+                    className="w-full h-10 px-3 rounded-lg bg-[#180e28] border border-[#3b0764] text-[#fae8ff] text-sm focus:outline-none focus:border-[#e879f9] transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[#646e71] block mb-1">SELECTED PROTOCOL CONTEST</label>
+                  <label className="block text-[11px] font-mono-nav text-[#c084fc] uppercase mb-1">
+                    Selected Gauntlet Track
+                  </label>
                   <select
                     value={formData.selectedEvent}
                     onChange={(e) => setFormData({ ...formData, selectedEvent: e.target.value })}
-                    className="w-full h-[38px] px-3 rounded-lg bg-[#010101] border border-[#252525] focus:border-[#e0e0e0] text-[#e0e0e0] focus:outline-none"
+                    className="w-full h-10 px-3 rounded-lg bg-[#180e28] border border-[#3b0764] text-[#fae8ff] text-sm focus:outline-none focus:border-[#e879f9] transition-colors cursor-pointer"
                   >
                     {CONTESTS.map((c) => (
-                      <option key={c.id} value={c.title} className="bg-[#16191b]">
-                        {c.code} // {c.title} — {c.role}
+                      <option key={c.id} value={c.title} className="bg-[#180e28] text-white">
+                        {c.title} ({c.tag})
                       </option>
                     ))}
                   </select>
                 </div>
 
-                <div className="mt-2 pt-3 border-t border-[#252525] flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-3 py-1.5 text-[#646e71] hover:text-[#e0e0e0] cursor-pointer"
-                  >
-                    CANCEL
-                  </button>
-                  <button
-                    type="submit"
-                    className="h-[36px] px-5 rounded-[100px] bg-[#1f1f23] border border-[#252525] hover:border-[#828b8d] text-[#e0e0e0] font-medium cursor-pointer"
-                  >
-                    CONFIRM & ISSUE PASS
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  className="w-full mt-6 h-11 rounded-xl bg-gradient-to-r from-[#701a75] via-[#4a044e] to-[#2e1065] hover:from-[#a21caf] hover:to-[#581c87] border border-[#e879f9] text-[#fae8ff] text-xs font-mono-nav tracking-wider font-semibold shadow-[0_0_25px_rgba(232,121,249,0.4)] transition-all cursor-pointer"
+                >
+                  {submitted ? 'CREDENTIAL UPDATED' : 'MINT DELEGATE CREDENTIAL'}
+                </button>
               </form>
+            ) : (
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-[#180e28] border border-[#3b0764]">
+                  <div className="text-xs font-mono-nav text-[#e879f9]">{selectedContestData.tag}</div>
+                  <h4 className="text-lg font-display text-white mt-1">{selectedContestData.title}</h4>
+                  <p className="text-xs text-[#a89cb8] mt-2 leading-relaxed">{selectedContestData.summary}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono-nav">
+                  {selectedContestData.telemetry.map((t) => (
+                    <div key={t.label} className="p-2.5 rounded-lg bg-[#180e28]/50 border border-[#3b0764]/40">
+                      <div className="text-[10px] text-[#c084fc]">{t.label}</div>
+                      <div className="text-[#fae8ff] font-medium mt-0.5">{t.val}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </div>
