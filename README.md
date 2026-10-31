@@ -79,12 +79,6 @@ All four are original contest concepts written for this site.
 
 ---
 
-## 5. Responsiveness
-
-Built mobile-aware with Tailwind CSS utilities and tested on desktop and mobile widths. The 3D scenes and the header adapt to smaller viewports. `<Confirm your tested breakpoints/devices here>`
-
----
-
 ## 6. Tech Stack
 
 | Area | Tools |
@@ -128,12 +122,6 @@ npm run preview
 
 ---
 
-
-
-## Credits
-
-Built by **`<Full Name>`** for the ROBOTiX Club Recruitment 2026, Web & App Development Domain.
-ROBOTiX Club, NIT Raipur.
 
 ## 🛠️ Tech Stack & Directory Layout
 
