@@ -6,7 +6,7 @@
 
 | | |
 |---|---|
-| **Live website** | `<PASTE LIVE URL HERE>` |
+| **Live website** | robotixdemo77.vercel.app |
 | **GitHub repository** | https://github.com/preyanshw29/robotix_demo |
 | **Candidate** | `Priyanshu Tomar` · `3rd Sem` · Electrical Engineering, NIT Raipur |
 
